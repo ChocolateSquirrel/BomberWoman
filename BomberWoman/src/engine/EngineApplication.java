@@ -54,7 +54,7 @@ public class EngineApplication extends SimpleApplication {
 		round = new GameRound();
 		gameRules = new GameRules(round.getMap(), round.getPlayerAvatar(), round.getPlayerAvatar().getCube().getNode());
 		initKeys();
-		//initAudio();
+		initAudio();
 		
 		// Camera is fixed
 		flyCam.setEnabled(false);
@@ -108,7 +108,7 @@ public class EngineApplication extends SimpleApplication {
 	}
 	
 	private void initAudio() {
-		AudioNode audio_nature = new AudioNode(assetManager, "../assets/sounds/foret.ogg", DataType.Stream);
+		AudioNode audio_nature = new AudioNode(assetManager, "assets/Sounds/foret.ogg", DataType.Stream);
 		audio_nature.setLooping(true);
 		audio_nature.setPositional(true);
 		audio_nature.setVolume(3);
