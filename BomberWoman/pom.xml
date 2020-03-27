@@ -36,6 +36,11 @@
 	        <artifactId>jme3-lwjgl</artifactId>
 	        <version>${jme3_v}</version>
 	    </dependency>
+		<dependency>
+		    <groupId>org.jmonkeyengine</groupId>
+		    <artifactId>jme3-jogg</artifactId>
+		    <version>3.2.0-stable</version>
+		</dependency>
 	</dependencies>
   
 	<build>

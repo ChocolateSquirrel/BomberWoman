@@ -10,6 +10,7 @@ import game.map.DestructibleWall;
 import game.map.Entity;
 import game.map.ImproveRangeBombPowerUp;
 import game.map.Map;
+import game.map.PlayerAvatar;
 import game.map.PowerUp;
 import game.map.Wall;
 
@@ -23,19 +24,23 @@ import game.map.Wall;
  */
 public class GameRound {
 	private Map map;
-	private Avatar playerAvatar;
+	private PlayerAvatar playerAvatar;
 	
 	public GameRound() {
 		// Create map
 		map = new Map(20, 10);
 		
 		Entity entity1 = new Entity("player", new Color(0, 0, 255, 0));
-		playerAvatar = new Avatar(entity1, 0, 0);
+		playerAvatar = new PlayerAvatar(entity1, 0, 0);
 		map.addNonGridEntity(playerAvatar);
 		
-		Entity entity6 = new Entity("versus", new Color(0, 0, 255, 0));
+		Entity entity6 = new Entity("versus1", new Color(0, 0, 255, 0));
 		Avatar versus = new Avatar(entity6, 19, 9);
 		map.addNonGridEntity(versus);
+		
+		Entity entity11 = new Entity("versus2", new Color(0, 0, 255, 0));
+		Avatar versus2 = new Avatar(entity11, 15, 9);
+		map.addNonGridEntity(versus2);
 		
 		Entity entity8 = new Entity("Speed boots", new Color(150, 150, 0, 0));
 		ChangeAvatarSpeedPowerUp powerUpSpeed = new ChangeAvatarSpeedPowerUp(entity8, 15, 2, 2f);
@@ -75,7 +80,7 @@ public class GameRound {
 		return map;
 	}
 	
-	public Avatar getPlayerAvatar() {
+	public PlayerAvatar getPlayerAvatar() {
 		return playerAvatar;
 	}
 	

@@ -17,6 +17,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
 
+import engine.renderitems.Message;
 import engine.renderitems.Text;
 import game.BomberWomanMain;
 import game.GameRound;
@@ -36,8 +37,8 @@ import game.map.PowerUp;
 public class EngineApplication extends SimpleApplication {
 	private GameRules gameRules; 
 	private GameRound round;
+	private Message message;
 
-	
 	// Holds the unique EngineApplication instance
 	private static EngineApplication instance;
 	
@@ -52,7 +53,13 @@ public class EngineApplication extends SimpleApplication {
 	@Override
 	public void simpleInitApp() {
 		round = new GameRound();
-		gameRules = new GameRules(round.getMap(), round.getPlayerAvatar(), round.getPlayerAvatar().getCube().getNode());
+		gameRules = new GameRules(round.getMap(), round.getPlayerAvatar());
+		message = new Message(round.getMap().getWidth(),
+				round.getMap().getHeight() /2,
+				new Vector3f((round.getMap().getWidth())/2, (round.getMap().getHeight())/2, BomberWomanMain.Z_MESSAGE),
+				new ColorRGBA(0.1f, 0.2f, 0.3f, 0.5f),
+				" ");
+		rootNode.detachChild(message.getNode());
 		initKeys();
 		initAudio();
 		
@@ -82,12 +89,29 @@ public class EngineApplication extends SimpleApplication {
         cam.setFrustum(-1000, 1000, -aspect * size, aspect * size, size, -size);
         
         // Display number of lives of avatar player.
-        
+        round.getPlayerAvatar().getText().changeStringInText("Nb of lives: " + round.getPlayerAvatar().getLivesAvatar());
 	}
 	
 	@Override
 	public void simpleUpdate(float tpf) {
-		gameRules.manageTimeUpdate(round, tpf);
+		switch (gameRules.endOfTheRound()) {
+		case "no more ennemy":
+			message.changeMessage("You win, there is no more ennemy !");
+			rootNode.attachChild(message.getNode());
+			break;
+		case "no life":
+			message.changeMessage("You loose, you don't have anymore life !");
+			rootNode.attachChild(message.getNode());
+			break;
+		case "time exceeded":
+			message.changeMessage("You loose because of time !");
+			rootNode.attachChild(message.getNode());
+			break;
+		default:
+			gameRules.manageTimeUpdate(round, tpf);
+			listener.setLocation(cam.getLocation());
+			listener.setRotation(cam.getRotation());
+		}
 	}
 	
 	private void initKeys() {
@@ -108,7 +132,7 @@ public class EngineApplication extends SimpleApplication {
 	}
 	
 	private void initAudio() {
-		AudioNode audio_nature = new AudioNode(assetManager, "assets/Sounds/foret.ogg", DataType.Stream);
+		AudioNode audio_nature = new AudioNode(assetManager, "Sounds/ambient/foret.ogg", DataType.Stream);
 		audio_nature.setLooping(true);
 		audio_nature.setPositional(true);
 		audio_nature.setVolume(3);
@@ -126,5 +150,4 @@ public class EngineApplication extends SimpleApplication {
 	public Node getRootNode() {
 		return rootNode;
 	}
-
 }

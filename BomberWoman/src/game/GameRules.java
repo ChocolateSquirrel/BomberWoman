@@ -18,6 +18,7 @@ import game.map.Entity;
 import game.map.Ground;
 import game.map.ImproveRangeBombPowerUp;
 import game.map.Map;
+import game.map.PlayerAvatar;
 import game.map.PowerUp;
 import game.map.Wall;
 
@@ -28,14 +29,12 @@ import game.map.Wall;
  */
 public class GameRules {
 	private Map map;
-	private Avatar avatar;
-	private Node playerNode;
+	private PlayerAvatar playerAvatar;
 	private boolean isRunning  = true;
 	
-	public GameRules(Map map, Avatar avatar, Node playerNode) {
+	public GameRules(Map map, PlayerAvatar playerAvatar) {
 		this.map = map;
-		this.avatar = avatar;
-		this.playerNode = playerNode;
+		this.playerAvatar = playerAvatar;
 	}
 	
 	public void manageContinuousInputs(String name, float value, float tpf) {
@@ -48,7 +47,7 @@ public class GameRules {
 		Vector3f v = new Vector3f( 0, 0, 0);
 		
 		// Convert avatar speed to coordinates per second
-		float distance = tpf * avatar.getAvatarSpeed();			
+		float distance = tpf * playerAvatar.getAvatarSpeed();			
 		switch(name) {
 			case BomberWomanMain.CONTROL_RIGHT : v = new Vector3f(distance, 0, BomberWomanMain.Z_AVATAR); break;
 			case BomberWomanMain.CONTROL_LEFT : v = new Vector3f(-distance, 0, BomberWomanMain.Z_AVATAR); break;
@@ -58,7 +57,7 @@ public class GameRules {
 			default : break; // Unsupported key
 		}
 		
-		moveEntityNode(playerNode, v, avatar, map);	
+		moveEntityNode(v, playerAvatar, map);	
 	}
 	
 	public void manageDiscreteInputs(String name, boolean isPressed, float tpf) {
@@ -76,25 +75,25 @@ public class GameRules {
 		// Pose a bomb
 		if (name.equals(BomberWomanMain.CONTROL_BOMB) && isPressed) {
 			
-			Vector3f avatarCenter = new Vector3f(
-					avatar.getX() + 0.5f,
-					avatar.getY() + 0.5f,
+			Vector3f playerAvatarCenter = new Vector3f(
+					playerAvatar.getX() + 0.5f,
+					playerAvatar.getY() + 0.5f,
 					BomberWomanMain.Z_AVATAR);
 			
-			Vector3f positionNearerAvatar = new Vector3f(
-					(float)Math.floor(avatarCenter.x),
-					(float)Math.floor(avatarCenter.y),
+			Vector3f positionNearerPlayerAvatar = new Vector3f(
+					(float)Math.floor(playerAvatarCenter.x),
+					(float)Math.floor(playerAvatarCenter.y),
 					BomberWomanMain.Z_AVATAR);
 			
-			Entity entityUnderBomb = map.getGroundAt((int)positionNearerAvatar.x, (int)positionNearerAvatar.y);
+			Entity entityUnderBomb = map.getGroundAt((int)positionNearerPlayerAvatar.x, (int)positionNearerPlayerAvatar.y);
 			Ground ent = (Ground) entityUnderBomb ;
 			
 			// Creation of a bomb only if there is no bomb on the ground
 			if (!ent.getIsBomb()) {				
 				Bomb bombinette = new Bomb(new Entity("bomb", new Color(32, 32, 32, 32)),
-						positionNearerAvatar.x + 0.5f,
-						positionNearerAvatar.y + 0.5f,
-						avatar.getRangeDamage(),
+						positionNearerPlayerAvatar.x + 0.5f,
+						positionNearerPlayerAvatar.y + 0.5f,
+						playerAvatar.getRangeDamage(),
 						2);
 				map.addNonGridEntity(bombinette);
 				map.getGroundUnderBomb(bombinette).setIsBomb(true);
@@ -119,15 +118,27 @@ public class GameRules {
 		// Make bomb explode if it is time
 		for (Bomb bomb : map.getBombList()) {
 			
-			// Damages caused by bomb : on the scene (visual) and on the map (entities)
-			if (Clock.getInstance().getTimeInSeconds() >= bomb.getExplosionTime()) {
-				EngineApplication.getInstance().getRootNode().attachChild(bomb.getImpactedZoneGeometry().getNode());
-				bomb.removeBombNode();
+			// Damages caused by bomb : on the scene (visual) and on the map (walls and avatars)
+			if ( Clock.getInstance().getTimeInSeconds() >= bomb.getExplosionTime() && !bomb.getHasExploded() ) {
+				bomb.playExplosionSound();
+				bomb.transformBombGeometryIntoImpactedZoneGeometry();
+				bomb.setHasExploded(true);
+				
 				for (DestructibleWall wall : map.getImpactedDestructibleWall(bomb)) {
 					wall.removeDestructibleWallNode();
 					map.removeDestructibleWall(wall);
 				}
-				avatar.isInDanger(map.getImpactedGroundZone(bomb));
+				
+				for (Avatar avatar : map.getAvatar()) {
+					if (avatar.isInDanger(map.getImpactedGroundZone(bomb))) {
+						avatar.setLivesAvatar(avatar.getLivesAvatar() - 1);
+						System.out.println("nombre de vies de l'avatar " + avatar.getEntity().getName() + " : " + avatar.getLivesAvatar());
+					}
+					else {
+						// Don't change avatar's lives
+					}
+				}
+				playerAvatar.getText().changeStringInText("Nb of lives: " + playerAvatar.getLivesAvatar());
 			}
 			else {
 				// Don't explode yet
@@ -144,19 +155,25 @@ public class GameRules {
 				// Nothing to remove
 			}
 		}
+		
+		// Clean the map
+		for (Avatar avatar : map.getAvatar()) {
+			if (avatar.getLivesAvatar() <= 0) {
+				EngineApplication.getInstance().getRootNode().detachChild(avatar.getCube().getNode());
+				map.removeNonGridAlignedEntities(avatar);
+				System.out.println("Avatar " + avatar.getEntity().getName() + " is dead !");
+			}
+		}
 	}
 	
 	/**
 	 * Move the node if the arrival point is in the Map and set new coordinates to the Avatar.
-	 * @param node node attached to the avatar.
+	 * When the avatar goes through a powerUp, he catches it.
 	 * @param candidateTranslation candidate vector for the transformation.
 	 * @param avatar avatar to move.
-	 * @param map the map, used to detect avatars outside of the map.
+	 * @param map the map, used to detect walls and powerUp.
 	 */
-	private static void moveEntityNode(Node node, Vector3f candidateTranslation, Avatar avatar, Map map) {
-		System.out.println( "Node: " + node.getWorldTranslation().toString() );
-		System.out.println( "Avatar: " + avatar.toString() );
-		
+	private static void moveEntityNode(Vector3f candidateTranslation, Avatar avatar, Map map) {
 		Vector3f candidatePosition = new Vector3f( 
 			avatar.getX() + candidateTranslation.x, 
 			avatar.getY() + candidateTranslation.y,
@@ -178,9 +195,9 @@ public class GameRules {
 			position.y - avatar.getY(),
 			0 );
 		
-		avatar.setX( position.x );
-		avatar.setY( position.y );
-		node.move( translation );
+		avatar.setX(position.x);
+		avatar.setY(position.y);
+		avatar.getCube().getNode().move(translation);
 		
 		// Catch powerUp "on the road" and remove catching powerUp from map and scene.
 		for (PowerUp powerUp : map.getPowerUpOnMap()) {
@@ -191,8 +208,6 @@ public class GameRules {
 				powerUp.applyPowerUp(avatar);
 			}
 		}
-		
-		System.out.println(avatar.getPowerUpList().toString());
 	}
 	
 	/**
@@ -224,12 +239,20 @@ public class GameRules {
 		// Test if there is a (just one) true in the ArrayList
 		if (interAnswer.contains(true)){
 			answer = true;
-		}
-		System.out.println("Intersection with walls : " + answer);		
+		}	
 		return answer;
 	}
 	
 	
-	
+	public String endOfTheRound() {
+		String str = " ";
+		if (playerAvatar.getLivesAvatar() <= 0)
+			str = BomberWomanMain.LOOSE_NO_MORE_LIFE;
+		if (map.getAvatar().size() == 1)
+			str = BomberWomanMain.WIN_NO_MORE_ENNEMY;
+		if (Clock.getInstance().getTimeInSeconds() > 3)
+			str = BomberWomanMain.LOOSE_TIME_OFF;
+		return str;
+	}
 	
 }

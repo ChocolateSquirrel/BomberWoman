@@ -19,7 +19,7 @@ public class ImpactedZoneGeometry extends RenderItem {
 		Geometry horizontalCube = new Geometry("Box", b1);
 		Material mat1 = new Material(EngineApplication.getInstance().getAssetManager(),
 		          "Common/MatDefs/Misc/Unshaded.j3md");
-		mat1.setColor("Color", new ColorRGBA(16, 16, 16, 255));
+		mat1.setColor("Color", new ColorRGBA(1, 0, 0, 1));
 		horizontalCube.setMaterial(mat1);
 		horizontalCube.move(position);
 		node.attachChild(horizontalCube);
@@ -28,7 +28,7 @@ public class ImpactedZoneGeometry extends RenderItem {
 		Geometry verticalCube = new Geometry("Box", b2);
 		Material mat2 = new Material(EngineApplication.getInstance().getAssetManager(),
 		          "Common/MatDefs/Misc/Unshaded.j3md");
-		mat2.setColor("Color", new ColorRGBA(16, 16, 16, 255));
+		mat2.setColor("Color", new ColorRGBA(1, 0, 0, 0));
 		verticalCube.setMaterial(mat2);
 		verticalCube.move(position);
 		node.attachChild(verticalCube);

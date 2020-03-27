@@ -15,6 +15,8 @@ public class BomberWomanMain {
 	public static final float Z_POWER_UP = 1.05f;
 	public static final float Z_BOMB = 1.1f;
 	public static final float Z_AVATAR = 1.15f;
+	public static final float Z_MESSAGE = 1.5f;
+	
 	
 	// Name of controls for Engine Key mapping
 	public static final String CONTROL_PAUSE = "Pause";
@@ -25,10 +27,16 @@ public class BomberWomanMain {
 	public static final String CONTROL_DOWN = "Down";
 	
 	// Explosion visual life time
-	public static final double EXPLOSION_VISUAL_LIFE_TIME_IN_SECONDS = 2;
+	public static final double EXPLOSION_VISUAL_LIFE_TIME_IN_SECONDS = 1;
 	
 	// Speed of the avatar expressed in map coordinates per second
 	public static final float AVATAR_SPEED = 10f; 
+	
+	// Different ways to stop the round
+	public static final String WIN_NO_MORE_ENNEMY = "no more ennemy";
+	public static final String LOOSE_NO_MORE_LIFE = "no life";
+	public static final String LOOSE_TIME_OFF = "time exceeded";
+	
 
 	public static void main(String[] args) {			
 		// Use the engine to create an app

@@ -1,6 +1,9 @@
 package game;
 
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+
+import engine.EngineApplication;
 import engine.renderitems.Text;
 
 public class Clock {
@@ -31,9 +34,10 @@ public class Clock {
 
 	private Clock() {
 		this.elapsedTime = 0;
-		this.text = new Text(new Vector3f( 5.5f, -1, 0 ), getTimeAsString());
+		this.text = new Text(new Vector3f( 5.5f, -1, 0 ), getTimeAsString(), new ColorRGBA(0, 1, 0, 1));
 	}
 	
+	// Transform Time in a String and give the number of Frames
 	private String getTimeAsString() {
 		double timeInSeconds = getTimeInSeconds();
 		int i = (int)timeInSeconds;
@@ -66,6 +70,7 @@ public class Clock {
 		else {
 			str.append(seconds);
 		}
+		
 		return str.toString();
 	}
 	

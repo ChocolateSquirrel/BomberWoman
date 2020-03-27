@@ -170,6 +170,16 @@ public class Map {
 		return nbCells;
 	}
 	
+	public List<Avatar> getAvatar(){
+		List<Avatar> listAvatarOnMap = new ArrayList<Avatar>();
+		for (PlacedEntity plEnt : nonGridAlignedEntities) {
+			if (plEnt instanceof Avatar) {
+				listAvatarOnMap.add((Avatar) plEnt);
+			}
+		}
+		return listAvatarOnMap;
+	}
+	
 	public List<Wall> getWall(){
 		List<Wall> wallList = new ArrayList<Wall>();
 		for (Entity[] subEnt : gridAlignedEntities) {
