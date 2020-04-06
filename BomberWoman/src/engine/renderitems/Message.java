@@ -35,9 +35,5 @@ public class Message extends RenderItem {
 
 	public void changeMessage(String s) {
 		message.changeStringInText(s);
-		int sizeOfMessage = s.length();
-		System.out.println(sizeOfMessage);
-		Vector3f translation = new Vector3f(position.x-sizeOfMessage/10,position.y,position.z);
-		message.translate(translation);
 	}
 }

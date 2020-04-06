@@ -23,8 +23,7 @@ public class Avatar extends PlacedEntity {
 	public Avatar(Entity entity, float x, float y) {
 		super(entity, x, y);
 		cube = new Cube(1, 1, new Vector3f(x+0.5f, y+0.5f, BomberWomanMain.Z_AVATAR), new Color(0, 0, 255, 0));
-		avatarSpeed = BomberWomanMain.AVATAR_SPEED * 1;
-		
+		avatarSpeed = BomberWomanMain.AVATAR_SPEED * 1;	
 	}
 	
 	public String toString() {
