@@ -4,6 +4,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 
 import engine.renderitems.Text;
+import game.Action;
 import game.BomberWomanMain;
 
 public class PlayerAvatar extends Avatar {

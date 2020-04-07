@@ -23,4 +23,5 @@ public class Cube extends RenderItem {
 		node.attachChild(cube);
 	}
 
+
 }

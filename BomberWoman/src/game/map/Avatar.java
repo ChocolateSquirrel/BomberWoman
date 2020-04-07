@@ -10,6 +10,7 @@ import com.jme3.math.Vector3f;
 import engine.EngineApplication;
 import engine.renderitems.Cube;
 import engine.renderitems.Text;
+import game.Action;
 import game.BomberWomanMain;
 
 public class Avatar extends PlacedEntity {
@@ -18,12 +19,14 @@ public class Avatar extends PlacedEntity {
 	private int rangeDamage = 1;
 	private float avatarSpeed;
 	private int livesAvatar = 2;
+	private List<Action> actionToDo;
 	
 
 	public Avatar(Entity entity, float x, float y) {
 		super(entity, x, y);
 		cube = new Cube(1, 1, new Vector3f(x+0.5f, y+0.5f, BomberWomanMain.Z_AVATAR), new Color(0, 0, 255, 0));
 		avatarSpeed = BomberWomanMain.AVATAR_SPEED * 1;	
+		actionToDo = new ArrayList<>();
 	}
 	
 	public String toString() {
@@ -66,6 +69,17 @@ public class Avatar extends PlacedEntity {
 		powerUpListAvatar.add(powerUp);
 	}
 	
+	public List<Action> getActionToDo(){
+		return actionToDo;
+	}
+	
+	public void clearActionToDo() {
+		actionToDo.clear();
+	}
+	
+	public void addActionToDo(Action action) {
+		actionToDo.add(action);
+	}
 	
 	/**
 	 * Test if avatar is spatially able to catch a powerUp.
@@ -99,6 +113,25 @@ public class Avatar extends PlacedEntity {
 	}
 	
 	/**
+	 * Test if avatar intersects Walls.
+	 * @param listWall list of Wall to test.
+	 * @return true (intersection with one or many walls) or false (no intersection with a wall among listWall)
+	 */
+	public static boolean intersectionWithWalls(List<Wall> listWall, Vector3f candidatePosition) {
+		for (Wall wall : listWall) {
+			float leftMaxPositionX = Math.max(candidatePosition.x, wall.getX());
+			float rightMaxPositionX = Math.min(candidatePosition.x + 1, wall.getX() + 1);
+			float lowMaxPositionY = Math.max(candidatePosition.y, wall.getY());
+			float highMinPositionY = Math.min(candidatePosition.y + 1, wall.getY() + 1);
+			
+			if ( (leftMaxPositionX<rightMaxPositionX) && (lowMaxPositionY<highMinPositionY) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
 	 * Test if avatar is in danger: on a ground impacted by a bomb.
 	 * @param listGround: list of ground which are in an impacted zone.
 	 * @return true if avatar is on a ground impacted by a bomb.
@@ -106,8 +139,8 @@ public class Avatar extends PlacedEntity {
 	public boolean isInDanger(List<Ground> listGround) {
 		boolean isDanger = false;
 		Vector3f positionNearerAvatar = new Vector3f(
-				(float)Math.floor(this.getX() + 0.5f),
-				(float)Math.floor(this.getY() + 0.5f),
+				(float)Math.floor(getX() + 0.5f),
+				(float)Math.floor(getY() + 0.5f),
 				BomberWomanMain.Z_AVATAR);
 		for (Ground ground : listGround) {
 			if ( (positionNearerAvatar.x == ground.getX()) && (positionNearerAvatar.y == ground.getY()) ) {
