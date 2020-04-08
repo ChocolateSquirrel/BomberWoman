@@ -13,6 +13,10 @@ public class MoveAction implements Action{
 		this.direction = direction;
 	}
 	
+	public MoveAction(Direction direction) {
+		this.direction = direction.name();
+	}
+	
 	public String getDirection() {
 		return direction;
 	}

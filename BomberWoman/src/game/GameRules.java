@@ -83,12 +83,47 @@ public class GameRules {
 		
 		// Not paused: update
 		Clock.getInstance().addTime(tpf);
-		//System.out.println(playerAvatar.getActionToDo());
 		
-		// Actions of Avatar
-		for (Action action : playerAvatar.getActionToDo()) {
-			action.applyAction(playerAvatar, map, tpf);
+		// Actions of Avatars
+		for (Avatar avatar : map.getAvatar()) {
+			// For PlayerAvatar
+			if (avatar instanceof PlayerAvatar) {
+				for (Action action : avatar.getActionToDo()) {
+					action.applyAction(avatar, map, tpf);
+				}
+				avatar.clearActionToDo();	
+			}
+			
+			// Add a random action to MonsterAvatar
+			if (avatar instanceof MonsterAvatar) {
+				if (Clock.getInstance().getTimeInSeconds() >= ((MonsterAvatar) avatar).getTimeOfBegginingCurrentAction() + 1) {
+					avatar.clearActionToDo();
+					int choice = (int) Math.floor(Math.random()*5);
+					switch (choice) {
+					case 0:
+						((MonsterAvatar) avatar).setCurrentAction(new MoveAction("Right"), Clock.getInstance().getTimeInSeconds());
+						break;
+					case 1:
+						((MonsterAvatar) avatar).setCurrentAction(new MoveAction("Left"), Clock.getInstance().getTimeInSeconds());
+						break;
+					case 2:
+						((MonsterAvatar) avatar).setCurrentAction(new MoveAction("Up"), Clock.getInstance().getTimeInSeconds());
+						break;
+					case 3:
+						((MonsterAvatar) avatar).setCurrentAction(new MoveAction("Down"), Clock.getInstance().getTimeInSeconds());
+						break;
+					case 4:
+						((MonsterAvatar) avatar).setCurrentAction(new PoseBombAction(), Clock.getInstance().getTimeInSeconds());
+						break;
+					default : break; //No action
+					}
+				}
+				for (Action action : avatar.getActionToDo()) {
+					action.applyAction(avatar, map, tpf);
+				}
+			}
 		}
+		
 		
 		// Make bomb explode if it is time
 		for (Bomb bomb : map.getBombList()) {
@@ -131,14 +166,13 @@ public class GameRules {
 			}
 		}
 		
-		// Clean the map and Action to do 
+		// Clean the map and Action to do for Avatars
 		for (Avatar avatar : map.getAvatar()) {
 			if (avatar.getLivesAvatar() <= 0) {
 				EngineApplication.getInstance().getRootNode().detachChild(avatar.getCube().getNode());
 				map.removeNonGridAlignedEntities(avatar);
 				System.out.println("Avatar " + avatar.getEntity().getName() + " is dead !");
 			}
-			avatar.clearActionToDo();
 		}
 	}
 	
