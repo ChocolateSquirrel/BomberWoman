@@ -2,6 +2,7 @@ package game;
 
 import com.jme3.math.Vector3f;
 
+import engine.renderitems.Sound;
 import game.map.Avatar;
 import game.map.Map;
 import game.map.PowerUp;

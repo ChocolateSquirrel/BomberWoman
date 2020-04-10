@@ -98,7 +98,7 @@ public class GameRules {
 			if (avatar instanceof MonsterAvatar) {
 				if (Clock.getInstance().getTimeInSeconds() >= ((MonsterAvatar) avatar).getTimeOfBegginingCurrentAction() + 1) {
 					avatar.clearActionToDo();
-					int choice = (int) Math.floor(Math.random()*5);
+					int choice = (int) Math.floor(Math.random()*4);
 					switch (choice) {
 					case 0:
 						((MonsterAvatar) avatar).setCurrentAction(new MoveAction("Right"), Clock.getInstance().getTimeInSeconds());
@@ -113,7 +113,7 @@ public class GameRules {
 						((MonsterAvatar) avatar).setCurrentAction(new MoveAction("Down"), Clock.getInstance().getTimeInSeconds());
 						break;
 					case 4:
-						((MonsterAvatar) avatar).setCurrentAction(new PoseBombAction(), Clock.getInstance().getTimeInSeconds());
+						//((MonsterAvatar) avatar).setCurrentAction(new PoseBombAction(), Clock.getInstance().getTimeInSeconds());
 						break;
 					default : break; //No action
 					}

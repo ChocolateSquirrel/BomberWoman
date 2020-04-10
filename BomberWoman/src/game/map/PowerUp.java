@@ -5,6 +5,7 @@ import com.jme3.scene.Node;
 
 import engine.EngineApplication;
 import engine.renderitems.Ball;
+import engine.renderitems.Sound;
 import game.BomberWomanMain;
 
 public abstract class PowerUp extends PlacedEntity {
@@ -23,6 +24,7 @@ public abstract class PowerUp extends PlacedEntity {
 		Node nodePowerUp = this.getBall().getNode();
 		EngineApplication.getInstance().getRootNode().detachChild(nodePowerUp);
 	}
+	
 	
 	/**
 	 * When avatar catch the powerUp, changes are applied to the avatar using this method.
