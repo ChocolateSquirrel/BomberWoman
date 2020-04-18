@@ -9,6 +9,9 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
 import engine.EngineApplication;
+import game.actions.Action;
+import game.actions.MoveAction;
+import game.actions.PoseBombAction;
 import game.map.Avatar;
 import game.map.Bomb;
 import game.map.ChangeAvatarSpeedPowerUp;
@@ -46,11 +49,13 @@ public class GameRules {
 		
 		else {	
 			switch (name) {
-			case BomberWomanMain.CONTROL_RIGHT : playerAvatar.addActionToDo(new MoveAction("Right")); break;
-			case BomberWomanMain.CONTROL_LEFT : playerAvatar.addActionToDo(new MoveAction("Left")); break;
-			case BomberWomanMain.CONTROL_UP : playerAvatar.addActionToDo(new MoveAction("Up")); break;
-			case BomberWomanMain.CONTROL_DOWN : playerAvatar.addActionToDo(new MoveAction("Down")); break;
-			default : break; // Unsupported key
+			case BomberWomanMain.CONTROL_RIGHT : playerAvatar.addActionToDo(new MoveAction(Direction.RIGHT)); break;
+			case BomberWomanMain.CONTROL_LEFT : playerAvatar.addActionToDo(new MoveAction(Direction.LEFT)); break;
+			case BomberWomanMain.CONTROL_UP : playerAvatar.addActionToDo(new MoveAction(Direction.UP)); break;
+			case BomberWomanMain.CONTROL_DOWN : playerAvatar.addActionToDo(new MoveAction(Direction.DOWN)); break;
+			default : 
+				// This is reached when a discrete input is provided: do nothing
+				break;
 			}
 		}
 	}
@@ -84,46 +89,9 @@ public class GameRules {
 		// Not paused: update
 		Clock.getInstance().addTime(tpf);
 		
-		// Actions of Avatars
-		for (Avatar avatar : map.getAvatar()) {
-			// For PlayerAvatar
-			if (avatar instanceof PlayerAvatar) {
-				for (Action action : avatar.getActionToDo()) {
-					action.applyAction(avatar, map, tpf);
-				}
-				avatar.clearActionToDo();	
-			}
-			
-			// Add a random action to MonsterAvatar
-			if (avatar instanceof MonsterAvatar) {
-				if (Clock.getInstance().getTimeInSeconds() >= ((MonsterAvatar) avatar).getTimeOfBegginingCurrentAction() + 1) {
-					avatar.clearActionToDo();
-					int choice = (int) Math.floor(Math.random()*4);
-					switch (choice) {
-					case 0:
-						((MonsterAvatar) avatar).setCurrentAction(new MoveAction("Right"), Clock.getInstance().getTimeInSeconds());
-						break;
-					case 1:
-						((MonsterAvatar) avatar).setCurrentAction(new MoveAction("Left"), Clock.getInstance().getTimeInSeconds());
-						break;
-					case 2:
-						((MonsterAvatar) avatar).setCurrentAction(new MoveAction("Up"), Clock.getInstance().getTimeInSeconds());
-						break;
-					case 3:
-						((MonsterAvatar) avatar).setCurrentAction(new MoveAction("Down"), Clock.getInstance().getTimeInSeconds());
-						break;
-					case 4:
-						//((MonsterAvatar) avatar).setCurrentAction(new PoseBombAction(), Clock.getInstance().getTimeInSeconds());
-						break;
-					default : break; //No action
-					}
-				}
-				for (Action action : avatar.getActionToDo()) {
-					action.applyAction(avatar, map, tpf);
-				}
-			}
-		}
-		
+		// Generate Actions for AI and apply all actions (players and monsters avatars)
+		haveAIGenerateActions();
+		applyAvatarActions(tpf);
 		
 		// Make bomb explode if it is time
 		for (Bomb bomb : map.getBombList()) {
@@ -139,10 +107,25 @@ public class GameRules {
 					map.removeDestructibleWall(wall);
 				}
 				
-				for (Avatar avatar : map.getAvatar()) {
-					if (avatar.isInDanger(map.getImpactedGroundZone(bomb))) {
-						avatar.setLivesAvatar(avatar.getLivesAvatar() - 1);
-						System.out.println("nombre de vies de l'avatar " + avatar.getEntity().getName() + " : " + avatar.getLivesAvatar());
+				for (Avatar avatar : map.getAvatars()) {
+					// Determine the owner of the bomb
+					if (avatar.getAvatarBombList().contains(bomb)) {
+						Avatar ownerBomb = avatar;
+						avatar.getAvatarBombList().remove(bomb);
+						ArrayList<Avatar> otherAvatars = (ArrayList<Avatar>) map.getAvatars().clone(); // For the moment otherAvatars contains all avatars on the map
+						otherAvatars.remove(ownerBomb);
+						
+						// Impact Avatars
+						if (avatar.isInDanger(map.getImpactedGroundZone(bomb))) {
+							avatar.setLivesAvatar(avatar.getLivesAvatar() - 1);
+							System.out.println("nombre de vies de l'avatar " + avatar.getEntity().getName() + " : " + avatar.getLivesAvatar());
+						}
+						for (Avatar avatarToKill : otherAvatars) {
+							if (avatarToKill.isInDanger(map.getImpactedGroundZone(bomb))) {
+								avatarToKill.setLivesAvatar(avatarToKill.getLivesAvatar() - 1);
+								System.out.println("nombre de vies de l'avatar " + avatarToKill.getEntity().getName() + " : " + avatarToKill.getLivesAvatar());
+							}
+						}
 					}
 					else {
 						// Don't change avatar's lives
@@ -166,8 +149,8 @@ public class GameRules {
 			}
 		}
 		
-		// Clean the map and Action to do for Avatars
-		for (Avatar avatar : map.getAvatar()) {
+		// Clean the map
+		for (Avatar avatar : map.getAvatars()) {
 			if (avatar.getLivesAvatar() <= 0) {
 				EngineApplication.getInstance().getRootNode().detachChild(avatar.getCube().getNode());
 				map.removeNonGridAlignedEntities(avatar);
@@ -176,18 +159,56 @@ public class GameRules {
 		}
 	}
 	
-	
-	
-	
-	public String endOfTheRound() {
-		String str = " ";
+	public GameRoundState getState() {
 		if (playerAvatar.getLivesAvatar() <= 0)
-			str = BomberWomanMain.LOOSE_NO_MORE_LIFE;
-		if (map.getAvatar().size() == 1)
-			str = BomberWomanMain.WIN_NO_MORE_ENNEMY;
+			return GameRoundState.LOOSE_NO_MORE_LIFE;
+		if (map.getAvatars().size() == 1)
+			return GameRoundState.WIN_NO_MORE_ENNEMY;
 		if (Clock.getInstance().getTimeInSeconds() > 240)
-			str = BomberWomanMain.LOOSE_TIME_OFF;
-		return str;
+			return GameRoundState.LOOSE_TIME_OFF;
+		
+		return GameRoundState.NOT_FINISHED;
+	}
+	
+	private void haveAIGenerateActions() {
+		for (Avatar avatar : map.getAvatars()) {
+			// Add a random action to MonsterAvatar
+			if (avatar instanceof MonsterAvatar) {
+				if (Clock.getInstance().getTimeInSeconds() >= ((MonsterAvatar) avatar).getTimeOfBegginingCurrentAction() + 1) {
+					avatar.clearActionToDo();
+					int choice = (int) Math.floor(Math.random()*5);
+					switch (choice) {
+					case 0:
+						((MonsterAvatar) avatar).setCurrentAction(new MoveAction(Direction.RIGHT), Clock.getInstance().getTimeInSeconds());
+						break;
+					case 1:
+						((MonsterAvatar) avatar).setCurrentAction(new MoveAction(Direction.LEFT), Clock.getInstance().getTimeInSeconds());
+						break;
+					case 2:
+						((MonsterAvatar) avatar).setCurrentAction(new MoveAction(Direction.UP), Clock.getInstance().getTimeInSeconds());
+						break;
+					case 3:
+						((MonsterAvatar) avatar).setCurrentAction(new MoveAction(Direction.DOWN), Clock.getInstance().getTimeInSeconds());
+						break;
+					case 4:
+						((MonsterAvatar) avatar).setCurrentAction(new PoseBombAction(), Clock.getInstance().getTimeInSeconds());
+						break;
+					default : 
+						throw new UnsupportedOperationException("Unknown action");
+					}
+				}
+			}
+		}
+	}
+	
+	private void applyAvatarActions(float tpf) {
+		for (Avatar avatar : map.getAvatars()) {
+			for (Action action : avatar.getActionsToDo()) {
+				action.applyAction(avatar, map, tpf);
+			}
+			if (avatar instanceof PlayerAvatar)
+				avatar.clearActionToDo();
+		}
 	}
 	
 }

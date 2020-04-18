@@ -1,6 +1,8 @@
 
 package game.map;
 
+import java.util.Optional;
+
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -28,11 +30,11 @@ public class Bomb extends PlacedEntity {
 	
 	public Bomb(Entity entity, float x, float y, int range, double fuseTimeInSeconds) {
 		super(entity, x, y);
-		cube = new Cube(0.5f, 0.5f, new Vector3f(x, y, BomberWomanMain.Z_BOMB), new Color(16, 16, 16, 0));
+		cube = new Cube(0.5f, 0.5f, new Vector3f(x, y, BomberWomanMain.Z_BOMB), new Color(16, 16, 16, 0), Optional.empty());
 		this.range = range;
 		this.fuseTimeInSeconds = fuseTimeInSeconds;
 		explosionTime = Clock.getInstance().getTimeInSeconds() + fuseTimeInSeconds;
-		impactedZoneGeometry = new ImpactedZoneGeometry(new Vector3f(x, y, BomberWomanMain.Z_GROUND), this.range);
+		impactedZoneGeometry = new ImpactedZoneGeometry(new Vector3f(x, y, BomberWomanMain.Z_BOMB), this.range);
 		EngineApplication.getInstance().getRootNode().detachChild(impactedZoneGeometry.getNode());
 		int i = (int) (Math.round(Math.random()*3) + 1);
 		bombExplosion = new Sound("Sounds/bomb/explosion" + i + ".ogg");

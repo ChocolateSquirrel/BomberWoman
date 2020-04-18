@@ -2,6 +2,7 @@ package game.map;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.jme3.audio.AudioData.DataType;
 import com.jme3.audio.AudioNode;
@@ -9,24 +10,30 @@ import com.jme3.math.Vector3f;
 
 import engine.EngineApplication;
 import engine.renderitems.Cube;
+import engine.renderitems.Sound;
 import engine.renderitems.Text;
-import game.Action;
 import game.BomberWomanMain;
+import game.actions.Action;
 
 public class Avatar extends PlacedEntity {
 	private Cube cube;
 	private final List<PowerUp> powerUpListAvatar = new ArrayList<PowerUp>();
+	private final List<Bomb> bombList = new ArrayList<Bomb>();
 	private int rangeDamage = 1;
 	private float avatarSpeed;
 	private int livesAvatar = 2;
 	private List<Action> actionToDo;
+	private Sound sadSound;
+	private Sound happySound;
 	
 
 	public Avatar(Entity entity, float x, float y) {
 		super(entity, x, y);
-		cube = new Cube(1, 1, new Vector3f(x+0.5f, y+0.5f, BomberWomanMain.Z_AVATAR), new Color(0, 0, 255, 0));
+		cube = new Cube(1, 1, new Vector3f(x+0.5f, y+0.5f, BomberWomanMain.Z_AVATAR), new Color(0, 0, 255, 0), Optional.empty());
 		avatarSpeed = BomberWomanMain.AVATAR_SPEED * 1;	
 		actionToDo = new ArrayList<>();
+		sadSound = new Sound("Sounds/voice/scream.ogg");
+		happySound = new Sound("Sounds/voice/laugh1.ogg");
 	}
 	
 	public String toString() {
@@ -65,11 +72,23 @@ public class Avatar extends PlacedEntity {
 		return avatarSpeed;
 	}
 	
+	public Sound getHappySound() {
+		return happySound;
+	}
+	
+	public Sound getSadSound() {
+		return sadSound;
+	}
+	
+	public List<Bomb> getAvatarBombList(){
+		return bombList;
+	}
+	
 	public void addPowerUp(PowerUp powerUp) {
 		powerUpListAvatar.add(powerUp);
 	}
 	
-	public List<Action> getActionToDo(){
+	public List<Action> getActionsToDo(){
 		return actionToDo;
 	}
 	

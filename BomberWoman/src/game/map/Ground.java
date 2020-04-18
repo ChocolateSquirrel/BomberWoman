@@ -1,8 +1,11 @@
 package game.map;
 
+import java.util.Optional;
+
 import com.jme3.math.Vector3f;
 
 import engine.renderitems.Cube;
+import engine.renderitems.TextureSet;
 import game.BomberWomanMain;
 
 public class Ground extends Entity {
@@ -17,7 +20,7 @@ public class Ground extends Entity {
 		this.isBomb = isBomb;
 		this.x = x;
 		this.y = y;
-		cube = new Cube(1, 1, new Vector3f(x+0.5f, y+0.5f, BomberWomanMain.Z_GROUND), getColor());
+		cube = new Cube(1, 1, new Vector3f(x+0.5f, y+0.5f, BomberWomanMain.Z_GROUND), getColor(), Optional.of(new TextureSet("Textures/woodColor.png", "Textures/woodNormal.png")));
 		isPowerUp = false;
 	}
 	

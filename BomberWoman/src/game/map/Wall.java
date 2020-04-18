@@ -1,8 +1,11 @@
 package game.map;
 
+import java.util.Optional;
+
 import com.jme3.math.Vector3f;
 
 import engine.renderitems.Cube;
+import engine.renderitems.TextureSet;
 import game.BomberWomanMain;
 
 public class Wall extends Entity {
@@ -14,7 +17,7 @@ public class Wall extends Entity {
 		super(name, color);
 		this.x = x;
 		this.y = y;
-		cube = new Cube(1, 1, new Vector3f(x+0.5f, y+0.5f, BomberWomanMain.Z_WALL), getColor());
+		cube = new Cube(1, 1, new Vector3f(x+0.5f, y+0.5f, BomberWomanMain.Z_WALL), getColor(), Optional.of(new TextureSet("Textures/woodColor.png", "Textures/woodNormal.png")));
 	}
 	
 	public int getX() {

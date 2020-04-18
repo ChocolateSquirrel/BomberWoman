@@ -1,5 +1,7 @@
 package engine;
 
+import java.io.IOException;
+
 import com.jme3.app.SimpleApplication;
 import com.jme3.audio.AudioData.DataType;
 import com.jme3.audio.AudioNode;
@@ -82,11 +84,11 @@ public class EngineApplication extends SimpleApplication {
 			new Vector3f(0, 0, -1) ); // direction
 		
 		// This switches camera to ortho mode
-		cam.setParallelProjection(true);
-		renderManager.setCamera(cam, true);
-        float aspect = (float) cam.getWidth() / cam.getHeight();
-        float size   = 10f;
-        cam.setFrustum(-1000, 1000, -aspect * size, aspect * size, size, -size);
+//		cam.setParallelProjection(true);
+//		renderManager.setCamera(cam, true);
+//        float aspect = (float) cam.getWidth() / cam.getHeight();
+//        float size   = 10f;
+//        cam.setFrustum(-1000, 1000, -aspect * size, aspect * size, size, -size);
         
         // Display number of lives of avatar player.
         round.getPlayerAvatar().getText().changeStringInText("Nb of lives: " + round.getPlayerAvatar().getLivesAvatar());
@@ -94,23 +96,25 @@ public class EngineApplication extends SimpleApplication {
 	
 	@Override
 	public void simpleUpdate(float tpf) {
-		switch (gameRules.endOfTheRound()) {
-		case "no more ennemy":
-			message.changeMessage("You win, there is no more ennemy !");
+		switch (gameRules.getState()) {
+		case WIN_NO_MORE_ENNEMY:
+			message.changeMessage(gameRules.getState().getName());
 			rootNode.attachChild(message.getNode());
 			break;
-		case "no life":
-			message.changeMessage("You loose, you don't have anymore life !");
+		case LOOSE_NO_MORE_LIFE:
+			message.changeMessage(gameRules.getState().getName());
 			rootNode.attachChild(message.getNode());
 			break;
-		case "time exceeded":
-			message.changeMessage("You loose because of time !");
+		case LOOSE_TIME_OFF:
+			message.changeMessage(gameRules.getState().getName());
 			rootNode.attachChild(message.getNode());
 			break;
-		default:
+		case NOT_FINISHED:
 			gameRules.manageTimeUpdate(round, tpf);
-			listener.setLocation(cam.getLocation());
-			listener.setRotation(cam.getRotation());
+			break;
+			
+		default: 
+			throw new UnsupportedOperationException("Unknown gameRoundState");
 		}
 	}
 	
