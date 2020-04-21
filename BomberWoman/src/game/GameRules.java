@@ -117,9 +117,6 @@ public class GameRules {
 								mapAvatar.applyDamageOntheAvatar(bomb);
 								if (avatar instanceof PlayerAvatar && mapAvatar instanceof MonsterAvatar)
 									avatar.getHappySound().play();
-								
-								
-								
 							}
 						}
 					}
