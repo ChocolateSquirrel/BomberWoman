@@ -18,5 +18,12 @@ public class PlayerAvatar extends Avatar {
 	public Text getText() {
 		return textNbLives;
 	}
+	
+	@Override
+	public void applyDamageOntheAvatar(Bomb bomb) {
+		livesAvatar = livesAvatar - 1;
+		System.out.println("number of lives of " + this.getEntity().getName() + " : " + livesAvatar);
+		sadSound.play();
+	}
 
 }

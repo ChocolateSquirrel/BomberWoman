@@ -110,20 +110,16 @@ public class GameRules {
 				for (Avatar avatar : map.getAvatars()) {
 					// Determine the owner of the bomb
 					if (avatar.getAvatarBombList().contains(bomb)) {
-						Avatar ownerBomb = avatar;
 						avatar.getAvatarBombList().remove(bomb);
-						ArrayList<Avatar> otherAvatars = (ArrayList<Avatar>) map.getAvatars().clone(); // For the moment otherAvatars contains all avatars on the map
-						otherAvatars.remove(ownerBomb);
-						
-						// Impact Avatars
-						if (avatar.isInDanger(map.getImpactedGroundZone(bomb))) {
-							avatar.setLivesAvatar(avatar.getLivesAvatar() - 1);
-							System.out.println("nombre de vies de l'avatar " + avatar.getEntity().getName() + " : " + avatar.getLivesAvatar());
-						}
-						for (Avatar avatarToKill : otherAvatars) {
-							if (avatarToKill.isInDanger(map.getImpactedGroundZone(bomb))) {
-								avatarToKill.setLivesAvatar(avatarToKill.getLivesAvatar() - 1);
-								System.out.println("nombre de vies de l'avatar " + avatarToKill.getEntity().getName() + " : " + avatarToKill.getLivesAvatar());
+						// Apply damages on avatars
+						for (Avatar mapAvatar : map.getAvatars()) {
+							if (mapAvatar.isInDanger(map.getImpactedGroundZone(bomb))) {
+								mapAvatar.applyDamageOntheAvatar(bomb);
+								if (avatar instanceof PlayerAvatar && mapAvatar instanceof MonsterAvatar)
+									avatar.getHappySound().play();
+								
+								
+								
 							}
 						}
 					}

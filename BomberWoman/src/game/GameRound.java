@@ -39,9 +39,9 @@ public class GameRound {
 		MonsterAvatar versus = new MonsterAvatar(entity2, 19, 9);
 		map.addNonGridEntity(versus);
 		
-		Entity entity3 = new Entity("versus2", new Color(0, 0, 255, 0));
-		MonsterAvatar versus2 = new MonsterAvatar(entity3, 15, 9);
-		map.addNonGridEntity(versus2);
+//		Entity entity3 = new Entity("versus2", new Color(0, 0, 255, 0));
+//		MonsterAvatar versus2 = new MonsterAvatar(entity3, 15, 9);
+//		map.addNonGridEntity(versus2);
 		
 		Entity entity4 = new Entity("Speed boots", new Color(150, 150, 0, 0));
 		ChangeAvatarSpeedPowerUp powerUpSpeed = new ChangeAvatarSpeedPowerUp(entity4, 15, 2, 2f);

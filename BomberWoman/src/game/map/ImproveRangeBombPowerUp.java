@@ -13,14 +13,14 @@ public class ImproveRangeBombPowerUp extends PowerUp {
 	@Override
 	public void applyPowerUp(Avatar avatar) {
 		avatar.setRangeDamage(range);
-		if (range >= avatar.getRangeDamage()) {
-			Sound sound = new Sound ("Sounds/voice/laugh1.ogg");
-			sound.play();
-		}
-		else {
-			Sound sound = new Sound("Sounds/voice/scream.ogg");
-			sound.play();
-		}
+//		if (range >= avatar.getRangeDamage()) {
+//			Sound sound = new Sound ("Sounds/voice/laugh1.ogg");
+//			sound.play();
+//		}
+//		else {
+//			Sound sound = new Sound("Sounds/voice/scream.ogg");
+//			sound.play();
+//		}
 	}
 
 }

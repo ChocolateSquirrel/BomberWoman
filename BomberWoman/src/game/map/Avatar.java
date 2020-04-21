@@ -21,10 +21,10 @@ public class Avatar extends PlacedEntity {
 	private final List<Bomb> bombList = new ArrayList<Bomb>();
 	private int rangeDamage = 1;
 	private float avatarSpeed;
-	private int livesAvatar = 2;
+	protected int livesAvatar = 2;
 	private List<Action> actionToDo;
-	private Sound sadSound;
-	private Sound happySound;
+	protected Sound sadSound;
+	protected Sound happySound;
 	
 
 	public Avatar(Entity entity, float x, float y) {
@@ -152,7 +152,7 @@ public class Avatar extends PlacedEntity {
 	
 	/**
 	 * Test if avatar is in danger: on a ground impacted by a bomb.
-	 * @param listGround: list of ground which are in an impacted zone.
+	 * @param listGround: list of grounds which are in an impacted zone.
 	 * @return true if avatar is on a ground impacted by a bomb.
 	 */
 	public boolean isInDanger(List<Ground> listGround) {
@@ -168,6 +168,12 @@ public class Avatar extends PlacedEntity {
 			}
 		}
 		return isDanger;
+	}
+	
+	
+	public void applyDamageOntheAvatar(Bomb bomb) {
+		livesAvatar = livesAvatar - 1;
+		System.out.println("number of lives of " + this.getEntity().getName() + " : " + livesAvatar);
 	}
 	
 	

@@ -14,14 +14,14 @@ public class ChangeAvatarSpeedPowerUp extends PowerUp {
 	@Override
 	public void applyPowerUp(Avatar avatar) {
 		avatar.setAvatarSpeedCoeeficient(coefficientSpeed);
-		if (coefficientSpeed >= 1) {
-			Sound sound = new Sound("Sounds/voice/laugh2.ogg");
-			sound.play();
-		}
-		else {
-			Sound sound = new Sound("Sounds/voice/scream.ogg");
-			sound.play();
-		}
+//		if (coefficientSpeed >= 1) {
+//			Sound sound = new Sound("Sounds/voice/laugh2.ogg");
+//			sound.play();
+//		}
+//		else {
+//			Sound sound = new Sound("Sounds/voice/scream.ogg");
+//			sound.play();
+//		}
 	}
 
 }
