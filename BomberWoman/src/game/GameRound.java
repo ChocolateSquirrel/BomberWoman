@@ -14,6 +14,8 @@ import game.map.MonsterAvatar;
 import game.map.PlayerAvatar;
 import game.map.PowerUp;
 import game.map.Wall;
+import game.roundState.GameRoundState;
+import game.roundState.State;
 
 /**
  * The class represents a game round, which has the following life cycle:<br>
@@ -26,10 +28,14 @@ import game.map.Wall;
 public class GameRound {
 	private Map map;
 	private PlayerAvatar playerAvatar;
+	private float timeOfAGame = 60; // In seconds
+	private GameRoundState gameRoundState;
 	
 	public GameRound() {
 		// Create map
 		map = new Map(20, 10);
+		
+		gameRoundState = new GameRoundState(State.NOT_FINISHED, 0);
 		
 		Entity entity1 = new Entity("player", new Color(0, 0, 255, 0));
 		playerAvatar = new PlayerAvatar(entity1, 0, 0);
@@ -39,9 +45,9 @@ public class GameRound {
 		MonsterAvatar versus = new MonsterAvatar(entity2, 19, 9);
 		map.addNonGridEntity(versus);
 		
-//		Entity entity3 = new Entity("versus2", new Color(0, 0, 255, 0));
-//		MonsterAvatar versus2 = new MonsterAvatar(entity3, 15, 9);
-//		map.addNonGridEntity(versus2);
+		Entity entity3 = new Entity("versus2", new Color(0, 0, 255, 0));
+		MonsterAvatar versus2 = new MonsterAvatar(entity3, 15, 9);
+		map.addNonGridEntity(versus2);
 		
 		Entity entity4 = new Entity("Speed boots", new Color(150, 150, 0, 0));
 		ChangeAvatarSpeedPowerUp powerUpSpeed = new ChangeAvatarSpeedPowerUp(entity4, 15, 2, 2f);
@@ -82,4 +88,20 @@ public class GameRound {
 		return playerAvatar;
 	}
 	
+	public float getTimeOfAGame() {
+		return timeOfAGame;
+	}
+	
+	public GameRoundState getGameRoundState() {
+		return gameRoundState;
+	}
+	
+	public void setGameRoundState(GameRoundState gameRoundState) {
+		this.gameRoundState = gameRoundState;
+	}
+	
+	public void setGameRoundState(State state, long numberOfFrame) {
+		this.getGameRoundState().setState(state);
+		this.getGameRoundState().setNumberOfFrame(numberOfFrame);
+	}
 }

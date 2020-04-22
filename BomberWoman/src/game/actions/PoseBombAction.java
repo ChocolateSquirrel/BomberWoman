@@ -40,7 +40,7 @@ public class PoseBombAction implements Action {
 			map.getGroundUnderBomb(bombinette).setIsBomb(true);
 		}
 		else {
-			System.out.println("Already a bomb!!");
+			//System.out.println("Already a bomb!!");
 		}
 		
 	}

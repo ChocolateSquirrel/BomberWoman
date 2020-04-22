@@ -9,6 +9,7 @@ import engine.renderitems.Text;
 public class Clock {
 	private double elapsedTime;
 	private Text text;
+	private long nbrFrames;
 	private static Clock instance;
 	
 	public static Clock getInstance() {
@@ -30,6 +31,14 @@ public class Clock {
 	public void addTime(double time) {
 		elapsedTime += time;
 		text.changeStringInText(getTimeAsString());
+	}
+	
+	public void addFrame() {
+		nbrFrames += 1;
+	}
+	
+	public long getNbrFrames() {
+		return nbrFrames;
 	}
 
 	private Clock() {
@@ -72,6 +81,5 @@ public class Clock {
 		}
 		
 		return str.toString();
-	}
-	
+	}	
 }

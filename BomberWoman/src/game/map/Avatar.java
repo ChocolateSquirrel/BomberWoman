@@ -176,5 +176,4 @@ public class Avatar extends PlacedEntity {
 		System.out.println("number of lives of " + this.getEntity().getName() + " : " + livesAvatar);
 	}
 	
-	
 }

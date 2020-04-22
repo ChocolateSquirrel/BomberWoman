@@ -21,8 +21,7 @@ public class PlayerAvatar extends Avatar {
 	
 	@Override
 	public void applyDamageOntheAvatar(Bomb bomb) {
-		livesAvatar = livesAvatar - 1;
-		System.out.println("number of lives of " + this.getEntity().getName() + " : " + livesAvatar);
+		super.applyDamageOntheAvatar(bomb);
 		sadSound.play();
 	}
 

@@ -1,37 +1,22 @@
 package engine;
 
-import java.io.IOException;
-
 import com.jme3.app.SimpleApplication;
 import com.jme3.audio.AudioData.DataType;
 import com.jme3.audio.AudioNode;
-import com.jme3.font.BitmapFont;
-import com.jme3.font.BitmapText;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.KeyTrigger;
-import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.shape.Box;
-import com.jme3.scene.shape.Sphere;
 
 import engine.renderitems.Message;
-import engine.renderitems.Text;
 import game.BomberWomanMain;
 import game.GameRound;
 import game.GameRules;
-import game.map.Avatar;
-import game.map.Bomb;
-import game.map.Color;
-import game.map.Entity;
-import game.map.Ground;
-import game.map.Map;
-import game.map.PlacedEntity;
-import game.map.PowerUp;
+import game.roundState.GameRoundState;
+import game.roundState.State;
 
 /**
  * Its single instance represents the life of an application built on the engine.
@@ -40,6 +25,9 @@ public class EngineApplication extends SimpleApplication {
 	private GameRules gameRules; 
 	private GameRound round;
 	private Message message;
+	private AudioNode audio_win;
+	private AudioNode audio_loose;
+	private AudioNode audio_hurryUp;
 
 	// Holds the unique EngineApplication instance
 	private static EngineApplication instance;
@@ -96,26 +84,37 @@ public class EngineApplication extends SimpleApplication {
 	
 	@Override
 	public void simpleUpdate(float tpf) {
-		switch (gameRules.getState()) {
+		GameRoundState previousState = round.getGameRoundState();
+		GameRoundState newState = gameRules.changeRoundState(round);
+		
+		switch (newState.getState()) {
 		case WIN_NO_MORE_ENNEMY:
-			message.changeMessage(gameRules.getState().getName());
+			message.changeMessage(newState.getState().getName());
 			rootNode.attachChild(message.getNode());
+			audio_win.play();
 			break;
 		case LOOSE_NO_MORE_LIFE:
-			message.changeMessage(gameRules.getState().getName());
+			message.changeMessage(newState.getState().getName());
 			rootNode.attachChild(message.getNode());
+			audio_loose.play();
 			break;
 		case LOOSE_TIME_OFF:
-			message.changeMessage(gameRules.getState().getName());
+			message.changeMessage(newState.getState().getName());
 			rootNode.attachChild(message.getNode());
+			audio_loose.play();
 			break;
-		case NOT_FINISHED:
+		case NOT_FINISHED_HURRY_UP:
+		case NOT_FINISHED :
 			gameRules.manageTimeUpdate(round, tpf);
+			if (newState.getState() == State.NOT_FINISHED_HURRY_UP && previousState.getState() != State.NOT_FINISHED_HURRY_UP)
+				audio_hurryUp.play();
 			break;
 			
 		default: 
 			throw new UnsupportedOperationException("Unknown gameRoundState");
 		}
+		
+		round.setGameRoundState(newState);
 	}
 	
 	private void initKeys() {
@@ -142,6 +141,24 @@ public class EngineApplication extends SimpleApplication {
 		audio_nature.setVolume(3);
 		rootNode.attachChild(audio_nature);
 		audio_nature.play();
+		
+		audio_win = new AudioNode(assetManager, "Sounds/ambient/applaudissements.ogg", DataType.Stream);
+		audio_win.setLooping(false);
+		audio_win.setPositional(true);
+		audio_win.setVolume(3);
+		rootNode.attachChild(audio_win);
+		
+		audio_loose = new AudioNode(assetManager, "Sounds/ambient/vache.ogg", DataType.Stream);
+		audio_loose.setLooping(false);
+		audio_loose.setPositional(true);
+		audio_loose.setVolume(3);
+		rootNode.attachChild(audio_win);
+		
+		audio_hurryUp = new AudioNode(assetManager, "Sounds/ambient/tictac.ogg", DataType.Stream);
+		audio_hurryUp.setLooping(true);
+		audio_hurryUp.setPositional(true);
+		audio_hurryUp.setVolume(3);
+		rootNode.attachChild(audio_hurryUp);
 	}
 	
 	/**

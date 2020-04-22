@@ -25,6 +25,8 @@ import game.map.MonsterAvatar;
 import game.map.PlayerAvatar;
 import game.map.PowerUp;
 import game.map.Wall;
+import game.roundState.GameRoundState;
+import game.roundState.State;
 
 /**
  * This class is where events from the engine come (key presses and time updates).<br>
@@ -88,6 +90,8 @@ public class GameRules {
 		
 		// Not paused: update
 		Clock.getInstance().addTime(tpf);
+		Clock.getInstance().addFrame();
+		System.out.println("Nombre de frames : " + Clock.getInstance().getNbrFrames());
 		
 		// Generate Actions for AI and apply all actions (players and monsters avatars)
 		haveAIGenerateActions();
@@ -152,15 +156,21 @@ public class GameRules {
 		}
 	}
 	
-	public GameRoundState getState() {
-		if (playerAvatar.getLivesAvatar() <= 0)
-			return GameRoundState.LOOSE_NO_MORE_LIFE;
+	public GameRoundState changeRoundState(GameRound gameRound) {
+		GameRoundState gameRoundState = new GameRoundState(State.NOT_FINISHED, Clock.getInstance().getNbrFrames());
+		if (playerAvatar.getLivesAvatar() <= 0) 
+			gameRoundState.setState(State.LOOSE_NO_MORE_LIFE);
+
 		if (map.getAvatars().size() == 1)
-			return GameRoundState.WIN_NO_MORE_ENNEMY;
-		if (Clock.getInstance().getTimeInSeconds() > 240)
-			return GameRoundState.LOOSE_TIME_OFF;
+			gameRoundState.setState(State.WIN_NO_MORE_ENNEMY);
 		
-		return GameRoundState.NOT_FINISHED;
+		if (Clock.getInstance().getTimeInSeconds() >= gameRound.getTimeOfAGame()*0.7f)
+			gameRoundState.setState(State.NOT_FINISHED_HURRY_UP);
+		
+		if (Clock.getInstance().getTimeInSeconds() >= gameRound.getTimeOfAGame())
+			gameRoundState.setState(State.LOOSE_TIME_OFF);
+		
+		return gameRoundState;
 	}
 	
 	private void haveAIGenerateActions() {
