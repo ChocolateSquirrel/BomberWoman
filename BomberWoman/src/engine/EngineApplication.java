@@ -148,7 +148,7 @@ public class EngineApplication extends SimpleApplication {
 		audio_win.setVolume(3);
 		rootNode.attachChild(audio_win);
 		
-		audio_loose = new AudioNode(assetManager, "Sounds/ambient/vache.ogg", DataType.Stream);
+		audio_loose = new AudioNode(assetManager, "Sounds/ambient/motus-boule-noire-mono.ogg", DataType.Stream);
 		audio_loose.setLooping(false);
 		audio_loose.setPositional(true);
 		audio_loose.setVolume(3);

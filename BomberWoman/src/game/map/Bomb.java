@@ -38,9 +38,12 @@ public class Bomb extends PlacedEntity {
 		EngineApplication.getInstance().getRootNode().detachChild(impactedZoneGeometry.getNode());
 		int i = (int) (Math.round(Math.random()*3) + 1);
 		bombExplosion = new Sound("Sounds/bomb/explosion" + i + ".ogg");
+		bombExplosion.changeVolume(0.5f);
 	}
 	
 	public boolean getHasExploded() {
+		
+		
 		return hasExploded;
 	}
 	

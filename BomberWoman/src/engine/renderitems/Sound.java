@@ -19,5 +19,9 @@ public class Sound extends RenderItem {
 	public void play() {
 		audioNode.playInstance();
 	}
+	
+	public void changeVolume(float volume) {
+		audioNode.setVolume(volume);
+	}
 
 }
