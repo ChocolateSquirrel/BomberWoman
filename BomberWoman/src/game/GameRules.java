@@ -27,6 +27,7 @@ import game.map.PowerUp;
 import game.map.Wall;
 import game.roundState.GameRoundState;
 import game.roundState.State;
+import states.PlayState;
 
 /**
  * This class is where events from the engine come (key presses and time updates).<br>
@@ -62,7 +63,15 @@ public class GameRules {
 		}
 	}
 	
-	public void manageDiscreteInputs(String name, boolean isPressed, float tpf) {
+	public void manageDiscreteInputs(String name, boolean isPressed, float tpf, GameRound gameRound) {
+		// Restart
+		if ( (gameRound.getGameRoundState().getState() == State.LOOSE_TIME_OFF || gameRound.getGameRoundState().getState() == State.LOOSE_NO_MORE_LIFE || gameRound.getGameRoundState().getState() == State.WIN_NO_MORE_ENNEMY) &&
+				name.equals(BomberWomanMain.CONTROL_RESTART) &&
+				!isPressed ) {
+			EngineApplication.getInstance().changeState(new PlayState());
+			return;
+		}
+		
 		// Change Pause status
 		if (name.equals(BomberWomanMain.CONTROL_PAUSE) && !isPressed) {
 			isRunning = !isRunning;
