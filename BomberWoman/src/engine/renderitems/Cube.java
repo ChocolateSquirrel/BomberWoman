@@ -10,7 +10,6 @@ import com.jme3.scene.shape.Box;
 import com.jme3.texture.Texture;
 
 import engine.EngineApplication;
-import game.map.Color;
 
 public class Cube extends RenderItem {
 	// Position is the center of the box

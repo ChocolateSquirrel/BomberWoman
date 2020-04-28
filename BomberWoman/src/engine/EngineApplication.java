@@ -1,12 +1,10 @@
 package engine;
 
 import com.jme3.app.SimpleApplication;
-import com.jme3.app.state.AppState;
 import com.jme3.scene.Node;
 
-import game.GameRound;
-import game.GameRules;
-import states.PlayState;
+import states.StateBase;
+import states.playstate.PlayState;
 
 /**
  * Its single instance represents the life of an application built on the engine.
@@ -15,7 +13,7 @@ public class EngineApplication extends SimpleApplication {
 
 	// Holds the unique EngineApplication instance
 	private static EngineApplication instance;
-	private AppState currentState;
+	private StateBase currentState;
 	
 	/**
 	 * Create the unique instance of EngineApplication.
@@ -46,7 +44,11 @@ public class EngineApplication extends SimpleApplication {
 		return rootNode;
 	}
 	
-	public void changeState(AppState state) {
+	public StateBase getCurrentState() {
+		return currentState;
+	}
+	
+	public void changeState(StateBase state) {
 		getStateManager().detach(currentState);
 		currentState = state;
 		getStateManager().attach(currentState);

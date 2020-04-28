@@ -13,11 +13,8 @@ import engine.EngineApplication;
 
 public class Message extends RenderItem {
 	private Text message;
-	private Vector3f position;
 	
 	public Message(float width, float height, Vector3f position, ColorRGBA color, String message) {
-		this.position = position;
-		
 		this.message = new Text(position, message, new ColorRGBA(0, 1, 0, 1));
 		node.attachChild(this.message.getNode());
 		
