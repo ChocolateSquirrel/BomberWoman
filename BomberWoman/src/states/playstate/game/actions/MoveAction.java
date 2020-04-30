@@ -19,6 +19,7 @@ public class MoveAction implements Action{
 	public void applyAction(Avatar avatar, Map map, float tpf) {
 		// Creation of a Vector which represent the candidate translation
 		Vector3f candidateTranslation = new Vector3f(0, 0, BomberWomanMain.Z_AVATAR);
+		System.out.println("Avatar : " + avatar.getEntity().getName() +  ", speed : " + avatar.getAvatarSpeed());
 		switch (directionEnum) {
 		case RIGHT: candidateTranslation.x = avatar.getAvatarSpeed() * tpf; break;
 		case LEFT : candidateTranslation.x = -avatar.getAvatarSpeed() * tpf; break;

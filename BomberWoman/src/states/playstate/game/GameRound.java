@@ -73,9 +73,7 @@ public class GameRound {
 		map.addGridEntity(entity10, 10, 4);
 		
 		System.out.println(map.describe());
-		
-		// Place text under the map
-		Clock.getInstance();
+
 	}
 	
 	public Map getMap() {

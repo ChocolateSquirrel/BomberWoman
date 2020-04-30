@@ -10,6 +10,7 @@ import com.jme3.scene.Node;
 
 import engine.EngineApplication;
 import main.BomberWomanMain;
+import states.menustate.MenuState;
 import states.playstate.PlayState;
 import states.playstate.game.actions.Action;
 import states.playstate.game.actions.MoveAction;
@@ -64,7 +65,7 @@ public class GameRules {
 				name.equals(BomberWomanMain.CONTROL_RESTART) &&
 				!isPressed ) {
 			Clock.getInstance().reset();
-			EngineApplication.getInstance().changeState(new PlayState());
+			EngineApplication.getInstance().changeState(new MenuState());
 			return;
 		}
 		

@@ -4,6 +4,7 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.scene.Node;
 
 import states.StateBase;
+import states.menustate.MenuState;
 import states.playstate.PlayState;
 
 /**
@@ -36,12 +37,16 @@ public class EngineApplication extends SimpleApplication {
 	 * Private constructor required for singleton pattern.
 	 */
 	private EngineApplication() {
-		currentState = new PlayState();
+		currentState = new MenuState();
 		getStateManager().attach(currentState);
 	}
 	
 	public Node getRootNode() {
 		return rootNode;
+	}
+	
+	public Node getGuiNode() {
+		return guiNode;
 	}
 	
 	public StateBase getCurrentState() {

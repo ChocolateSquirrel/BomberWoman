@@ -99,7 +99,7 @@ public class Avatar extends PlacedEntity {
 	
 	/**
 	 * Test if avatar is spatially able to catch a powerUp.
-	 * @param powerUpToCatch : a PowerUp intance. 
+	 * @param powerUpToCatch : a {@link PowerUp} instance. 
 	 * @return true if avatar is close enough to powerUpToCatch.
 	 */
 	public boolean canCatchPowerUp(PowerUp powerUpToCatch) {

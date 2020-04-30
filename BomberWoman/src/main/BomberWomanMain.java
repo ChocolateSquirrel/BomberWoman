@@ -1,4 +1,4 @@
-package main;
+ package main;
 
 import engine.EngineApplication;
 
@@ -13,6 +13,7 @@ public class BomberWomanMain {
 	public static final float Z_MESSAGE = 1.5f;
 
 	// Name of controls for Engine Key mapping
+	public static final String CONTROL_OK = "Ok";
 	public static final String CONTROL_RESTART = "Restart";
 	public static final String CONTROL_PAUSE = "Pause";
 	public static final String CONTROL_BOMB = "Bomb";

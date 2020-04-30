@@ -17,8 +17,10 @@ import engine.EngineListener;
 import engine.renderitems.Message;
 import main.BomberWomanMain;
 import states.StateBase;
+import states.playstate.game.Clock;
 import states.playstate.game.GameRound;
 import states.playstate.game.GameRules;
+import states.playstate.game.Timer;
 import states.playstate.game.roundstate.GameRoundState;
 import states.playstate.game.roundstate.State;
 
@@ -26,6 +28,7 @@ public class PlayState extends StateBase {
 	private GameRules gameRules; 
 	private GameRound round;
 	private Message message;
+	private Timer timer;
 	private AudioNode audioWin;
 	private AudioNode audioLoose;
 	private AudioNode audioHurryUp;
@@ -37,6 +40,7 @@ public class PlayState extends StateBase {
 		EngineApplication engineApp = (EngineApplication) app;
 		round = new GameRound();
 		gameRules = new GameRules(round.getMap(), round.getPlayerAvatar());
+		timer = new Timer(Clock.getInstance().getTimeInSeconds());
 		message = new Message(round.getMap().getWidth(),
 				round.getMap().getHeight() /2,
 				new Vector3f((round.getMap().getWidth())/2, (round.getMap().getHeight())/2, BomberWomanMain.Z_MESSAGE),
@@ -106,6 +110,7 @@ public class PlayState extends StateBase {
 
 	@Override
 	public void update(float tpf) {
+		timer.displayTime(Clock.getInstance().getTimeInSeconds());
 		GameRoundState previousState = round.getGameRoundState();
 		GameRoundState newState = gameRules.changeRoundState(round);
 		
@@ -179,12 +184,12 @@ public class PlayState extends StateBase {
 	}
 	
 	private void initAudio() {
-		AudioNode audio_nature = new AudioNode(EngineApplication.getInstance().getAssetManager(), "Sounds/ambient/foret.ogg", DataType.Stream);
-		audio_nature.setLooping(true);
-		audio_nature.setPositional(true);
-		audio_nature.setVolume(3);
-		EngineApplication.getInstance().getRootNode().attachChild(audio_nature);
-		audio_nature.play();
+		AudioNode audioNature = new AudioNode(EngineApplication.getInstance().getAssetManager(), "Sounds/ambient/foret.ogg", DataType.Stream);
+		audioNature.setLooping(true);
+		audioNature.setPositional(true);
+		audioNature.setVolume(3);
+		EngineApplication.getInstance().getRootNode().attachChild(audioNature);
+		audioNature.play();
 		
 		audioWin = new AudioNode(EngineApplication.getInstance().getAssetManager(), "Sounds/ambient/applaudissements.ogg", DataType.Stream);
 		audioWin.setLooping(false);
