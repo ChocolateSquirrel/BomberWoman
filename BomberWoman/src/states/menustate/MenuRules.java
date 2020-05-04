@@ -1,19 +1,22 @@
 package states.menustate;
 
-import com.jme3.math.ColorRGBA;
-
+import engine.renderitems.Sound;
 import main.BomberWomanMain;
 
 public class MenuRules {
 	private MenuState menuState;
 	private PseudoButton previousButton;
-	private PseudoButton newButton;
 	private int nbButtons;
+	private Sound okSound;
+	private Sound changeSound;
 	
 	public MenuRules(MenuState menuState) {
 		this.menuState = menuState;
 		previousButton = menuState.getButtons().get(0);
 		nbButtons = menuState.getButtons().size();
+		okSound = new Sound("Sounds/ambient/clochette.ogg");
+		changeSound = new Sound("Sounds/ambient/page.ogg");
+		
 	}
 	
 	public void manageDiscreteInputs(String name, boolean isPressed, float tpf) {
@@ -22,36 +25,34 @@ public class MenuRules {
 		if (!isPressed)
 			return;
 		else {
+			
 			switch (name) {
 			case BomberWomanMain.CONTROL_DOWN:
-				if (indexPreviousButton == nbButtons -1)
-					newButton = menuState.getButtons().get(0);
-				else
-					newButton = menuState.getButtons().get(indexPreviousButton + 1);
-				previousButton.changeColor(ColorRGBA.Blue);
-				newButton.changeColor(ColorRGBA.Orange);
-				menuState.changeMenuSelection(newButton.getMenuOfButton());
+			{
+				PseudoButton newButton = indexPreviousButton == nbButtons -1 ? menuState.getButtons().get(0) : menuState.getButtons().get(indexPreviousButton + 1);
+				previousButton.delightButton();
+				newButton.highlightButton();
+				menuState.setMenuHighlighted(newButton.getMenuOfButton());
 				previousButton = newButton;
-				System.out.println(menuState.getMenuSelected());
+				changeSound.play();
 				break;
+			}
 				
 			case BomberWomanMain.CONTROL_UP:
-				if (indexPreviousButton == 0)
-					newButton = menuState.getButtons().get(nbButtons - 1);
-				else
-					newButton = menuState.getButtons().get(indexPreviousButton - 1);
-				previousButton.changeColor(ColorRGBA.Blue);
-				newButton.changeColor(ColorRGBA.Orange);
-				menuState.changeMenuSelection(newButton.getMenuOfButton());
+				PseudoButton newButton = indexPreviousButton == 0 ? menuState.getButtons().get(nbButtons - 1) : menuState.getButtons().get(indexPreviousButton - 1);
+				previousButton.delightButton();
+				newButton.highlightButton();
+				menuState.setMenuHighlighted(newButton.getMenuOfButton());
 				previousButton = newButton;
-				System.out.println(menuState.getMenuSelected());
+				changeSound.play();
 				break;
 				
 			case BomberWomanMain.CONTROL_OK:
-				if (menuState.getMenuSelected() == MainMenuProposals.PLAY) {
-					menuState.setMenuStatus(MainMenuProposals.PLAY);
+				if (menuState.getMenuHighlighted() == MainMenuProposals.PLAY) {
+					menuState.setMenuSelected(MainMenuProposals.PLAY);
+					okSound.play();
 				}
-				if (menuState.getMenuSelected() == MainMenuProposals.EXIT) {
+				if (menuState.getMenuHighlighted() == MainMenuProposals.EXIT) {
 					System.exit(0);
 				}
 				break;

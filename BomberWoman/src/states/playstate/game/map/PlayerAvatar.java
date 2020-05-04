@@ -14,10 +14,6 @@ public class PlayerAvatar extends Avatar {
 		textNbLives = new Text(new Vector3f(2, 12, BomberWomanMain.Z_GROUND), " ", new ColorRGBA(1, 1, 0, 1));
 	}
 	
-	public Text getText() {
-		return textNbLives;
-	}
-	
 	@Override
 	public void applyDamageOntheAvatar(Bomb bomb) {
 		super.applyDamageOntheAvatar(bomb);

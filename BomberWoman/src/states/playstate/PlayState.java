@@ -8,13 +8,14 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.KeyTrigger;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.RenderManager;
 
 import engine.EngineApplication;
 import engine.EngineListener;
-import engine.renderitems.Message;
+import engine.hud.Bar;
+import engine.hud.EndMessage;
+import engine.hud.TimerHUD;
 import main.BomberWomanMain;
 import states.StateBase;
 import states.playstate.game.Clock;
@@ -27,8 +28,8 @@ import states.playstate.game.roundstate.State;
 public class PlayState extends StateBase {
 	private GameRules gameRules; 
 	private GameRound round;
-	private Message message;
-	private Timer timer;
+	private Bar hudBar;
+	private EndMessage endMessage;
 	private AudioNode audioWin;
 	private AudioNode audioLoose;
 	private AudioNode audioHurryUp;
@@ -40,13 +41,10 @@ public class PlayState extends StateBase {
 		EngineApplication engineApp = (EngineApplication) app;
 		round = new GameRound();
 		gameRules = new GameRules(round.getMap(), round.getPlayerAvatar());
-		timer = new Timer(Clock.getInstance().getTimeInSeconds());
-		message = new Message(round.getMap().getWidth(),
-				round.getMap().getHeight() /2,
-				new Vector3f((round.getMap().getWidth())/2, (round.getMap().getHeight())/2, BomberWomanMain.Z_MESSAGE),
-				new ColorRGBA(0.1f, 0.2f, 0.3f, 0.5f),
-				" ");
-		engineApp.getRootNode().detachChild(message.getNode());
+		hudBar = new Bar(engineApp);
+		endMessage = new EndMessage(engineApp);
+		engineApp.getGuiNode().attachChild(hudBar.getNode());
+		engineApp.getGuiNode().attachChild(endMessage.getNode());
 		initKeys();
 		initAudio();
 		
@@ -74,9 +72,6 @@ public class PlayState extends StateBase {
 //        float aspect = (float) EngineApplication.getInstance().getCamera().getWidth() / EngineApplication.getInstance().getCamera().getHeight();
 //        float size   = 10f;
 //        EngineApplication.getInstance().getCamera().setFrustum(-1000, 1000, -aspect * size, aspect * size, size, -size);
-        
-        // Display number of lives of avatar player.
-        round.getPlayerAvatar().getText().changeStringInText("Nb of lives: " + round.getPlayerAvatar().getLivesAvatar());
         
         isInitialized = true;
 	}
@@ -110,7 +105,7 @@ public class PlayState extends StateBase {
 
 	@Override
 	public void update(float tpf) {
-		timer.displayTime(Clock.getInstance().getTimeInSeconds());
+		hudBar.updateBar(round.getPlayerAvatar());
 		GameRoundState previousState = round.getGameRoundState();
 		GameRoundState newState = gameRules.changeRoundState(round);
 		
@@ -123,8 +118,8 @@ public class PlayState extends StateBase {
 				break;
 				
 			case WIN_NO_MORE_ENNEMY:
-				message.changeMessage(newState.getState().getName());
-				EngineApplication.getInstance().getRootNode().attachChild(message.getNode());
+				endMessage.changeMessage(newState.getState().getName());
+				EngineApplication.getInstance().getGuiNode().attachChild(endMessage.getNode());
 				audioHurryUp.stop();
 				if (previousState.getState() != State.WIN_NO_MORE_ENNEMY)
 					audioWin.play();
@@ -132,8 +127,8 @@ public class PlayState extends StateBase {
 				
 			case LOOSE_NO_MORE_LIFE:
 			case LOOSE_TIME_OFF:
-				message.changeMessage(newState.getState().getName());
-				EngineApplication.getInstance().getRootNode().attachChild(message.getNode());
+				endMessage.changeMessage(newState.getState().getName());
+				EngineApplication.getInstance().getGuiNode().attachChild(endMessage.getNode());
 				audioHurryUp.stop();
 				if (previousState.getState() != State.LOOSE_NO_MORE_LIFE && previousState.getState() != State.LOOSE_TIME_OFF)
 					audioLoose.play();
@@ -197,7 +192,7 @@ public class PlayState extends StateBase {
 		audioWin.setVolume(3);
 		EngineApplication.getInstance().getRootNode().attachChild(audioWin);
 		
-		audioLoose = new AudioNode(EngineApplication.getInstance().getAssetManager(), "Sounds/ambient/motus-boule-noire-mono.ogg", DataType.Stream);
+		audioLoose = new AudioNode(EngineApplication.getInstance().getAssetManager(), "Sounds/ambient/Creepy-sound-5-mono.ogg", DataType.Stream);
 		audioLoose.setLooping(false);
 		audioLoose.setPositional(true);
 		audioLoose.setVolume(3);

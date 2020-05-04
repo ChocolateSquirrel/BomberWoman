@@ -97,7 +97,6 @@ public class GameRules {
 		// Not paused: update
 		Clock.getInstance().addTime(tpf);
 		Clock.getInstance().addFrame();
-		System.out.println("Nombre de frames : " + Clock.getInstance().getNbrFrames());
 		
 		// Generate Actions for AI and apply all actions (players and monsters avatars)
 		haveAIGenerateActions();
@@ -134,7 +133,6 @@ public class GameRules {
 						// Don't change avatar's lives
 					}
 				}
-				playerAvatar.getText().changeStringInText("Nb of lives: " + playerAvatar.getLivesAvatar());
 			}
 			else {
 				// Don't explode yet

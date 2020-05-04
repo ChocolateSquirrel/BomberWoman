@@ -24,12 +24,10 @@ public class MenuState extends StateBase {
 	private boolean isEnabled = true;
 	private EngineApplication engineApp;
 	private AudioNode audioMenu;
-	private MainMenuProposals menuSelected = MainMenuProposals.PLAY;
-	private MainMenuProposals menuStatus = MainMenuProposals.OTHER;
+	private MainMenuProposals menuHighlighted = MainMenuProposals.PLAY;
+	private MainMenuProposals menuSelected = MainMenuProposals.OTHER;
 	private MenuRules menuRules;
 	private List<PseudoButton> buttons = new ArrayList<>();
-	
-	private Picture greyBackground;
 
 	@Override
 	public void initialize(AppStateManager stateManager, Application app) {
@@ -37,18 +35,25 @@ public class MenuState extends StateBase {
 		engineApp.getFlyByCamera().setEnabled(false);
 		initAudio();
 		initKey();
+		
+		Picture background = new Picture("Background");
+		background.setImage(engineApp.getAssetManager(), "Textures/mainMenuBackground.png", true);
+		background.setWidth(engineApp.getContext().getSettings().getWidth());
+		background.setHeight(engineApp.getContext().getSettings().getHeight());
+		background.setPosition(0, 0);
+		engineApp.getGuiNode().attachChild(background);
 
-		greyBackground = new Picture("fond gris");
-		greyBackground.setImage(engineApp.getAssetManager(), "Pictures/fondGris.png", true);
-		greyBackground.setWidth(engineApp.getContext().getSettings().getWidth()/2);
-		greyBackground.setHeight(engineApp.getContext().getSettings().getHeight());
-		greyBackground.setPosition(engineApp.getContext().getSettings().getWidth()/4, 0);
-		engineApp.getGuiNode().attachChild(greyBackground);
+		Picture verticalBoard = new Picture("vertical Board");
+		verticalBoard.setImage(engineApp.getAssetManager(), "Textures/mainMenuVerticalBar.png", true);
+		verticalBoard.setWidth(engineApp.getContext().getSettings().getWidth()/2);
+		verticalBoard.setHeight(engineApp.getContext().getSettings().getHeight());
+		verticalBoard.setPosition(engineApp.getContext().getSettings().getWidth()/4, 0);
+		engineApp.getGuiNode().attachChild(verticalBoard);
 		
 		buttons.add(new PseudoButton(engineApp, MainMenuProposals.PLAY, 2));
 		buttons.add(new PseudoButton(engineApp, MainMenuProposals.SETTINGS, 1));
 		buttons.add(new PseudoButton(engineApp, MainMenuProposals.EXIT, 0));
-		buttons.get(0).changeColor(ColorRGBA.Orange);
+		buttons.get(0).highlightButton();
 		for (PseudoButton button : buttons)
 			engineApp.getGuiNode().attachChild(button.getNode());
 	
@@ -85,13 +90,13 @@ public class MenuState extends StateBase {
 
 	@Override
 	public void update(float tpf) {
-		if (menuStatus == MainMenuProposals.PLAY) {
+		if (menuSelected == MainMenuProposals.PLAY) {
 			audioMenu.stop();
 			engineApp.getGuiNode().detachAllChildren();
 			engineApp.changeState(new PlayState());
 		}
-		System.out.println("selectionne : " + menuSelected);
-		System.out.println("status : " + menuStatus);
+		System.out.println("selectionne : " + menuHighlighted);
+		System.out.println("status : " + menuSelected);
 		
 	}
 
@@ -113,16 +118,16 @@ public class MenuState extends StateBase {
 		
 	}
 	
-	public void changeMenuSelection(MainMenuProposals newMenu) {
+	public void setMenuHighlighted(MainMenuProposals newMenu) {
+		menuHighlighted = newMenu;
+	}
+	
+	public MainMenuProposals getMenuHighlighted() {
+		return menuHighlighted;
+	}
+	
+	public void setMenuSelected(MainMenuProposals newMenu) {
 		menuSelected = newMenu;
-	}
-	
-	public MainMenuProposals getMenuSelected() {
-		return menuSelected;
-	}
-	
-	public void setMenuStatus(MainMenuProposals newMenu) {
-		menuStatus = newMenu;
 	}
 	
 	public List<PseudoButton> getButtons() {
