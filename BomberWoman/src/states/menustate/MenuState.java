@@ -149,7 +149,7 @@ public class MenuState extends StateBase {
 		audioMenu = new AudioNode(engineApp.getAssetManager(),"Sounds/ambient/foret.ogg", DataType.Stream);
 		audioMenu.setLooping(true);
 		audioMenu.setPositional(true);
-		audioMenu.setVolume(3);
+		audioMenu.setVolume(4);
 		engineApp.getRootNode().attachChild(audioMenu);
 		audioMenu.play();
 	}

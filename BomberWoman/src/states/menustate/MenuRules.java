@@ -15,8 +15,7 @@ public class MenuRules {
 		previousButton = menuState.getButtons().get(0);
 		nbButtons = menuState.getButtons().size();
 		okSound = new Sound("Sounds/ambient/clochette.ogg");
-		changeSound = new Sound("Sounds/ambient/page.ogg");
-		
+		changeSound = new Sound("Sounds/ambient/page.ogg");	
 	}
 	
 	public void manageDiscreteInputs(String name, boolean isPressed, float tpf) {
