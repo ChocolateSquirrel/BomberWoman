@@ -26,7 +26,7 @@ public class Avatar extends PlacedEntity {
 
 	public Avatar(Entity entity, float x, float y) {
 		super(entity, x, y);
-		cube = new Cube(1, 1, new Vector3f(x+0.5f, y+0.5f, BomberWomanMain.Z_AVATAR), new Color(0, 0, 255, 0), Optional.empty());
+		cube = new Cube(1, 1, new Vector3f(x+0.5f, y+0.5f, BomberWomanMain.Z_AVATAR), new Color(123, 10, 255, 0), Optional.empty());
 		avatarSpeed = BomberWomanMain.AVATAR_SPEED * 1;	
 		actionToDo = new ArrayList<>();
 		sadSound = new Sound("Sounds/voice/scream.ogg");

@@ -26,7 +26,7 @@ import states.playstate.game.roundstate.State;
 public class GameRound {
 	private Map map;
 	private PlayerAvatar playerAvatar;
-	private float timeOfAGame = 10; // In seconds
+	private float timeOfAGame = 60; // In seconds
 	private GameRoundState gameRoundState;
 	
 	public GameRound() {

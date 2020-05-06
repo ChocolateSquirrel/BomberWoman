@@ -23,10 +23,12 @@ import states.playstate.game.roundstate.GameRoundState;
 import states.playstate.game.roundstate.State;
 
 public class PlayState extends StateBase {
+	private EngineListener listener;
 	private GameRules gameRules; 
 	private GameRound round;
 	private Bar hudBar;
 	private EndMessage endMessage;
+	private AudioNode audioNature;
 	private AudioNode audioWin;
 	private AudioNode audioLoose;
 	private AudioNode audioHurryUp;
@@ -154,6 +156,8 @@ public class PlayState extends StateBase {
 	@Override
 	public void cleanup() {
 		EngineApplication.getInstance().getRootNode().detachAllChildren();
+		EngineApplication.getInstance().getInputManager().removeListener(listener);
+		stopAudio();
 	}
 	
 	private void initKeys() {
@@ -163,9 +167,9 @@ public class PlayState extends StateBase {
 		EngineApplication.getInstance().getInputManager().addMapping(BomberWomanMain.CONTROL_UP, new KeyTrigger(KeyInput.KEY_UP));
 		EngineApplication.getInstance().getInputManager().addMapping(BomberWomanMain.CONTROL_DOWN, new KeyTrigger(KeyInput.KEY_DOWN));
 		EngineApplication.getInstance().getInputManager().addMapping(BomberWomanMain.CONTROL_BOMB, new KeyTrigger(KeyInput.KEY_SPACE));
-		EngineApplication.getInstance().getInputManager().addMapping(BomberWomanMain.CONTROL_RESTART, new KeyTrigger(KeyInput.KEY_SPACE));
+		EngineApplication.getInstance().getInputManager().addMapping(BomberWomanMain.CONTROL_RESTART, new KeyTrigger(KeyInput.KEY_RETURN));
 		
-		EngineListener listener = new EngineListener();		
+		listener = new EngineListener();		
 		EngineApplication.getInstance().getInputManager().addListener((AnalogListener)listener, BomberWomanMain.CONTROL_RIGHT,
 				BomberWomanMain.CONTROL_LEFT,
 				BomberWomanMain.CONTROL_UP,
@@ -176,7 +180,7 @@ public class PlayState extends StateBase {
 	}
 	
 	private void initAudio() {
-		AudioNode audioNature = new AudioNode(EngineApplication.getInstance().getAssetManager(), "Sounds/ambient/foret.ogg", DataType.Stream);
+		audioNature = new AudioNode(EngineApplication.getInstance().getAssetManager(), "Sounds/ambient/foret.ogg", DataType.Stream);
 		audioNature.setLooping(true);
 		audioNature.setPositional(true);
 		audioNature.setVolume(3);
@@ -200,6 +204,13 @@ public class PlayState extends StateBase {
 		audioHurryUp.setPositional(true);
 		audioHurryUp.setVolume(3);
 		EngineApplication.getInstance().getRootNode().attachChild(audioHurryUp);
+	}
+	
+	private void stopAudio() {
+		audioNature.stop();
+		audioWin.stop();
+		audioLoose.stop();
+		audioHurryUp.stop();
 	}
 
 	@Override

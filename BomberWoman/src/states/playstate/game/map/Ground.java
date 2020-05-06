@@ -21,7 +21,7 @@ public class Ground extends Entity {
 		this.isBomb = isBomb;
 		this.x = x;
 		this.y = y;
-		cube = new Cube(1, 1, new Vector3f(x+0.5f, y+0.5f, BomberWomanMain.Z_GROUND), getColor(), Optional.of(new TextureSet("Textures/woodColor.png", "Textures/woodNormal.png")));
+		cube = new Cube(1, 1, new Vector3f(x+0.5f, y+0.5f, BomberWomanMain.Z_GROUND), getColor(), Optional.of(new TextureSet("Textures/concreteColor.png", "Textures/concreteNormal.png")));
 		isPowerUp = false;
 	}
 	

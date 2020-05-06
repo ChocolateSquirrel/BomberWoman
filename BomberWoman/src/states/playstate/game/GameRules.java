@@ -61,9 +61,11 @@ public class GameRules {
 	public void manageDiscreteInputs(String name, boolean isPressed, float tpf, GameRound gameRound) {
 		// Restart
 		if ( (gameRound.getGameRoundState().getState() == State.LOOSE_TIME_OFF || 
-				gameRound.getGameRoundState().getState() == State.LOOSE_NO_MORE_LIFE) &&
+				gameRound.getGameRoundState().getState() == State.LOOSE_NO_MORE_LIFE ||
+				gameRound.getGameRoundState().getState() == State.WIN_NO_MORE_ENNEMY) &&
 				name.equals(BomberWomanMain.CONTROL_RESTART) &&
 				!isPressed ) {
+		
 			Clock.getInstance().reset();
 			EngineApplication.getInstance().changeState(new MenuState());
 			return;

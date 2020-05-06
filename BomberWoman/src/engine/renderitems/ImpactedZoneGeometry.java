@@ -5,15 +5,17 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
+import com.jme3.texture.Texture;
 
 import engine.EngineApplication;
 
 public class ImpactedZoneGeometry extends RenderItem {
-	private int rangeBomb;
-	
 	public ImpactedZoneGeometry(Vector3f position, int rangeBomb) {
 		super();
-		this.rangeBomb = rangeBomb;
+		
+//		TextureSet textureSet = new TextureSet("Textures/increaseRange.png", "Textures/woodNormal.png");
+//		Texture colorTexture = EngineApplication.getInstance().getAssetManager().loadTexture(textureSet.colorMap);
+//		Texture normalTexture = EngineApplication.getInstance().getAssetManager().loadTexture(textureSet.normalMap);
 		
 		Box b1 = new Box((rangeBomb*2+1)*0.5f, 0.5f, 0.5f);
 		Geometry horizontalCube = new Geometry("Box", b1);
@@ -33,5 +35,7 @@ public class ImpactedZoneGeometry extends RenderItem {
 		verticalCube.move(position);
 		node.attachChild(verticalCube);
 		
+//		mat1.setTexture("ColorMap", colorTexture);
+//		mat2.setTexture("ColorMap", colorTexture);
 	}
 }

@@ -1,10 +1,13 @@
 package states.playstate.game.map;
 
+import engine.renderitems.TextureSet;
+
 public class ChangeAvatarSpeedPowerUp extends PowerUp {
 	private float coefficientSpeed;
 
 	public ChangeAvatarSpeedPowerUp(Entity entity, float x, float y, float coefficientSpeed) {
 		super(entity, x, y);
+		getBall().changeTextureSet(new TextureSet("Textures/changeSpeed.png", "Textures/woodNormal.png"));
 		this.coefficientSpeed = coefficientSpeed;
 		
 	}

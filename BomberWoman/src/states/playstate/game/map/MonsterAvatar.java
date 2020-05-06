@@ -1,5 +1,6 @@
 package states.playstate.game.map;
 
+import engine.renderitems.TextureSet;
 import states.playstate.game.Direction;
 import states.playstate.game.actions.Action;
 import states.playstate.game.actions.MoveAction;
@@ -11,6 +12,7 @@ public class MonsterAvatar extends Avatar {
 
 	public MonsterAvatar(Entity entity, float x, float y) {
 		super(entity, x, y);
+		getCube().changeTextureSet(new TextureSet("Textures/monsterAvatar.png", "Textures/woodNormal.png"));
 		int choice = (int) Math.floor(Math.random()*5);
 		switch (choice) {
 		case 0:

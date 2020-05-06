@@ -1,12 +1,13 @@
 package states.playstate.game.map;
 
-import engine.renderitems.Sound;
+import engine.renderitems.TextureSet;
 
 public class ImproveRangeBombPowerUp extends PowerUp {
 	private int range;
 
 	public ImproveRangeBombPowerUp(Entity entity, float x, float y, int range) {
 		super(entity, x, y);
+		getBall().changeTextureSet(new TextureSet("Textures/increaseRange.png", "Textures/woodNormal.png"));
 		this.range = range; 
 	}
 

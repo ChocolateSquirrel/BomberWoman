@@ -12,12 +12,14 @@ import com.jme3.texture.Texture;
 import engine.EngineApplication;
 
 public class Cube extends RenderItem {
+	private Material mat;
+	
 	// Position is the center of the box
 	public Cube(float width, float height, Vector3f position, Color color, Optional<TextureSet> textureSet) {
 		super();
 		Box b = new Box(width*0.5f, height*0.5f, 0.5f);
 		Geometry cube = new Geometry("Box", b);
-		Material mat = new Material(EngineApplication.getInstance().getAssetManager(),
+		mat = new Material(EngineApplication.getInstance().getAssetManager(),
 		          "Common/MatDefs/Misc/Unshaded.j3md");
 		
 		textureSet.ifPresent(ts -> { 
@@ -31,6 +33,13 @@ public class Cube extends RenderItem {
 		cube.setMaterial(mat);
 		cube.move(position);
 		node.attachChild(cube);
+	}
+	
+	public void changeTextureSet(TextureSet newTexture) {
+		Texture cubeColorTexture = EngineApplication.getInstance().getAssetManager().loadTexture(newTexture.colorMap);
+		mat.setTexture("ColorMap", cubeColorTexture);
+//		Texture cubeNormalTexture = EngineApplication.getInstance().getAssetManager().loadTexture(newTexture.normalMap);
+//		mat.setTexture("NormalMap", cubeNormalTexture);
 	}
 
 

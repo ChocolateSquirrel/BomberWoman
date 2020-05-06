@@ -23,6 +23,7 @@ public class MenuState extends StateBase {
 	private boolean isInitialized;
 	private boolean isEnabled = true;
 	private EngineApplication engineApp;
+	private EngineListener listener; 
 	private AudioNode audioMenu;
 	private MainMenuProposals menuHighlighted = MainMenuProposals.PLAY;
 	private MainMenuProposals menuSelected = MainMenuProposals.OTHER;
@@ -95,8 +96,8 @@ public class MenuState extends StateBase {
 			engineApp.getGuiNode().detachAllChildren();
 			engineApp.changeState(new PlayState());
 		}
-		System.out.println("selectionne : " + menuHighlighted);
-		System.out.println("status : " + menuSelected);
+		System.out.println("surligné : " + menuHighlighted);
+		System.out.println("selectionné : " + menuSelected);
 		
 	}
 
@@ -114,7 +115,9 @@ public class MenuState extends StateBase {
 
 	@Override
 	public void cleanup() {
-		// TODO Auto-generated method stub
+		EngineApplication.getInstance().getGuiNode().detachAllChildren();
+		EngineApplication.getInstance().getInputManager().removeListener(listener);
+		stopAudio();
 		
 	}
 	
@@ -159,10 +162,14 @@ public class MenuState extends StateBase {
 		engineApp.getInputManager().addMapping(BomberWomanMain.CONTROL_UP, new KeyTrigger(KeyInput.KEY_UP));
 		engineApp.getInputManager().addMapping(BomberWomanMain.CONTROL_DOWN, new KeyTrigger(KeyInput.KEY_DOWN));
 		
-		EngineListener listener = new EngineListener();
+		listener = new EngineListener();
 		engineApp.getInputManager().addListener(listener, BomberWomanMain.CONTROL_OK,
 				BomberWomanMain.CONTROL_UP,
 				BomberWomanMain.CONTROL_DOWN);
+	}
+	
+	private void stopAudio() {
+		audioMenu.stop();
 	}
 
 }

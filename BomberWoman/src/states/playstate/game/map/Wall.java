@@ -18,7 +18,7 @@ public class Wall extends Entity {
 		super(name, color);
 		this.x = x;
 		this.y = y;
-		cube = new Cube(1, 1, new Vector3f(x+0.5f, y+0.5f, BomberWomanMain.Z_WALL), getColor(), Optional.of(new TextureSet("Textures/woodColor.png", "Textures/woodNormal.png")));
+		cube = new Cube(1, 1, new Vector3f(x+0.5f, y+0.5f, BomberWomanMain.Z_WALL), getColor(), Optional.of(new TextureSet("Textures/wall_color.png", "Textures/wall_normal.png")));
 	}
 	
 	public int getX() {

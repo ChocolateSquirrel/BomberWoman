@@ -37,7 +37,7 @@ public class EngineApplication extends SimpleApplication {
 	 * Private constructor required for singleton pattern.
 	 */
 	private EngineApplication() {
-		currentState = new MenuState();
+		currentState = new PlayState();
 		getStateManager().attach(currentState);
 	}
 	
@@ -55,6 +55,7 @@ public class EngineApplication extends SimpleApplication {
 	
 	public void changeState(StateBase state) {
 		getStateManager().detach(currentState);
+		currentState.cleanup();
 		currentState = state;
 		getStateManager().attach(currentState);
 	}
