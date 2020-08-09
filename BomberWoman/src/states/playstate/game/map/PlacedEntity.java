@@ -1,6 +1,6 @@
 package states.playstate.game.map;
 
-public class PlacedEntity {
+public class PlacedEntity extends AbstractEntity {
 	private float xInCellCoordinates;
 	private float yInCellCoordinates;
 	private Entity entity;

@@ -1,7 +1,11 @@
 package states.playstate.game.map;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.jme3.math.Vector3f;
 
@@ -21,6 +25,10 @@ public class Map {
 	 * @throws IllegalArgumentException when rowCount or columnCount are negatives or zero.
 	 */
 	public Map(int rowCount, int columnCount) throws IllegalArgumentException {
+		buildMap(rowCount, columnCount);
+	}
+	
+	private void buildMap(int rowCount, int columnCount) throws IllegalArgumentException {
 		if (rowCount<=0 || columnCount<=0) {
 			throw new IllegalArgumentException("Received invalid grid dimensions: "+ rowCount + ", " + columnCount);
 		}
@@ -41,6 +49,68 @@ public class Map {
 			gridAlignedEntities[i] = new Entity[columnCount];
 		}
 	}
+	
+	public Map(String pathToMapFile) throws IllegalArgumentException {
+		BufferedReader bufferedReader = null;
+		int row;
+		int column;
+		
+		try {
+			bufferedReader = new BufferedReader(new FileReader(pathToMapFile));
+			String currentLine;
+			
+			// Skip invalid (empty or commented) lines
+			while ( ((currentLine=bufferedReader.readLine()) != null) ) {
+				if (!(currentLine.isEmpty()) && !(currentLine.startsWith("#")))
+					break;
+			}
+			
+			// Abort on empty file
+			if (currentLine == null)
+				throw new IllegalArgumentException("File is empty or does not contain dimensions");
+			
+			// Get two dimensions
+			String[] currentLineArray = currentLine.split(" ");
+			if (currentLineArray.length != 2) 
+				throw new IllegalArgumentException("Two dimensions were expected");
+			try {
+				row = Integer.parseInt(currentLineArray[0]);
+				column = Integer.parseInt(currentLineArray[1]);
+			} catch (NumberFormatException e) {
+				throw new IllegalArgumentException(e);
+			}
+			
+			// Construct a map 
+			buildMap(row, column);
+			
+			// Skip invalid lines and add Entities
+			while ((currentLine = bufferedReader.readLine()) != null) {
+				if ( !(currentLine.isEmpty()) && !(currentLine.startsWith("#")) ) {
+					AbstractEntity abstractEntity = AbstractEntityFactory.createAbstractEntity(currentLine.split(" "));
+					if (abstractEntity instanceof Wall) {
+						Wall wall = (Wall)abstractEntity;
+						addGridEntity(wall, wall.getX(), wall.getY());
+					}
+					else {
+						addNonGridEntity((PlacedEntity)abstractEntity);
+					}
+				}
+					
+			}
+			
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		} finally {
+			try {
+				if (bufferedReader != null)
+					bufferedReader.close();	
+			} catch (IOException e2) {
+				e2.printStackTrace();
+			}
+		}
+	}
+	
+	
 	
 	/**
 	 * Get the map width in cell coordinates.
@@ -178,6 +248,19 @@ public class Map {
 			}
 		}
 		return listAvatarOnMap;
+	}
+	
+	public PlayerAvatar getPlayerAvatar() {
+		Optional<PlayerAvatar> playerAvatar = getAvatars().stream()
+				.filter(avatar -> avatar instanceof PlayerAvatar)
+				.map(e -> (PlayerAvatar)e)
+				.findFirst();
+		if (playerAvatar.isPresent()) {
+			return playerAvatar.get();
+		}
+		else {
+			throw new IllegalStateException("No PlayerAvatar");
+		}
 	}
 	
 	public List<Wall> getWall(){

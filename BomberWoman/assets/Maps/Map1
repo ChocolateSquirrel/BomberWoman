@@ -1,0 +1,30 @@
+# This is an example map file
+
+# Comments are allowed, by starting a line with #
+
+# First line: map dimensions (width height)
+20 10
+
+# Lines after: entities in the map, with following format:
+# ENTITY_TYPE NAME X_POSITION Y_POSITION RED GREEN BLUE ALPHA
+
+# First example entity: blue player at (0, 0)
+PlayerAvatar player 0 0 0 0 255 0
+
+# Here are the other entities:
+MonsterAvatar versus1 19 9 0 0 255 0
+MonsterAvatar versus2 15 9 0 0 255 0
+Wall wall 10 5 0 255 0 0
+Wall wall 10 4 0 255 0 0
+DestructibleWall wall 2 8 0 255 0 0
+
+# PowerUps have special format because of powerUp type and attribute:
+# PowerUp POWERUP_TYPE NAME POWERUP_ATTRIBUTE X_POSITION Y_POSITION RED GREEN BLUE ALPHA
+
+# First example of PowerUp: boots that double speed at (15, 2)
+PowerUp ChangeAvatarSpeed speedBoots 2 15 2 150 150 0 0
+
+# Here are the other powerUps:
+PowerUp ChangeAvatarSpeed slowBoots 0.5 15 7 150 150 0 0
+PowerUp ImproveBombRange bombRange3 3 18 8 125 0 150 0
+PowerUp ImproveBombRange bombRange2 2 13 2 125 0 150 0

@@ -5,10 +5,11 @@ import engine.renderitems.Color;
 /**
  * An Entity represents an object placed on the map.
  */
-public class Entity {
+public class Entity extends AbstractEntity{
 	//A nonunique, human-readable name.
 	private final String name;
 	private final Color color;
+
 	
 	public Entity(String name, Color color) {
 		this.name = name;
